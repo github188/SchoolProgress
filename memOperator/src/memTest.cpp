@@ -47,6 +47,8 @@ int main(void)
     memcached_server_list_free(server_list);      
 	memcached_free(memc_s);    
 	return 1; 
+	
+	cout<<"go here:"<<endl;
 } 
 
 
