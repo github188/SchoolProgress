@@ -5,4 +5,6 @@
 	#include<string>
 	#include <libmemcached/memcached.h>
 	
+	#include<stdlib.h>
+	
 	#endif
