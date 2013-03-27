@@ -15,3 +15,4 @@ memTest.o : src/memTest.cpp
 	$(CXX) -g -c $< -Iinclude
 clean:
 	$(DEL_FILE) $(object) bin/memTest
+
