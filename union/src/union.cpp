@@ -3,6 +3,7 @@
 #include<string.h>
 using namespace std;
 
+/*跟结构体类似*/
 union obj
 {
 	obj *next;
