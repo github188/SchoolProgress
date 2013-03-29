@@ -18,6 +18,7 @@ void NEW::oom(char *warnMsg)
 	if(hander != 0)
 	{
 		(*hander)(warnMsg);
+		
 	}
 }
 
