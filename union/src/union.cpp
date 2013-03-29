@@ -27,7 +27,8 @@ int main(void)
 	
 	free(myObj1); 
 	
-	cout<<"after free myObj1 a:"<<a<<endl;	
+	cout<<"after free myObj1 a:"<<a<<endl;		
+	
 	
 	cout<<"data_client:"<<myObj2->data_client<<endl;
 	
