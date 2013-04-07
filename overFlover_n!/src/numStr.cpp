@@ -163,7 +163,7 @@ NumStr& NumStr::operator+= (NumStr &numStrF)
 }
 
 
-NumStr operator* (NumStr &numStrF,NumStr &numStrS)
+NumStr operator* (NumStr numStrF,NumStr numStrS)
 {
 	NumStr resultNumStr;
 	string result;
@@ -171,7 +171,9 @@ NumStr operator* (NumStr &numStrF,NumStr &numStrS)
 	{
 		return resultNumStr;
 	}
-	
+
+	cout<<"numStrF:"<<numStrF.strData<<endl;	
+	cout<<"numStrS:"<<numStrS.strData<<endl;	
 	char *ptrF,*ptrS;
 	int lenF,lenS;
 	size_t lastNumF,lastNumS,lastNumSum;
@@ -228,10 +230,12 @@ NumStr operator* (NumStr &numStrF,NumStr &numStrS)
 		resultNumStr.strData.erase(resultNumStr.strData.begin());
 	}
 	
+//	cout<<"resultNumStr:"<<resultNumStr.strData<<endl;
+
 	return resultNumStr;
 }
 
-NumStr loop(NumStr &numStr)
+NumStr loop(NumStr numStr)
 {
 	char *ptr = const_cast<char*>(numStr.strData.c_str());
 	NumStr result;
@@ -247,14 +251,26 @@ NumStr loop(NumStr &numStr)
 	if(numStr.size() == 1)
 	{
 		if(*ptr == '1' || *ptr == '0')
-		{		
-			resultStr = "0";
+		{
+			cout<<"the data is 1:"<<endl;		
+			resultStr = "1";
 			result.fillNewData(resultStr);
 			return result;
 		}
 	}
 	
-	return numStr * (loop(--numStr));
+
+	NumStr temp(numStr);
+	cout<<"numStr before:"<<temp.strData<<endl;
+
+	result = temp * loop(--numStr);
+	
+	cout<<"numStr end:"<<temp.strData<<endl;
+
+//	cout<<"resultStr:"<<result.strData<<endl;
+	
+	return result;
+//	return numStr * (loop(--numStr));
 }
 
 

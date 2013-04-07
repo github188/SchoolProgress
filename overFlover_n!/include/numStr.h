@@ -20,7 +20,7 @@ class NumStr
 	
 	NumStr(string &_strData,int _scale = 10):strData(_strData),scale(_scale)
 	{
-		
+		strData = _strData;
 	}
 	
 	NumStr(const NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
@@ -50,7 +50,7 @@ class NumStr
 	}
 	
 	
-	inline NumStr& operator =(NumStr &_strData)
+	inline NumStr& operator =(const NumStr &_strData)
 	{
 		strData = _strData.strData;
 		scale = _strData.scale;
@@ -68,12 +68,12 @@ class NumStr
 	
 };
 
-NumStr loop(NumStr &numStr);
+NumStr loop(NumStr numStr);
 
 
 NumStr operator+(NumStr &numStrF,NumStr &numStrS);
 
-NumStr operator* (NumStr &numStrF,NumStr &numStrS);
+NumStr operator* (NumStr numStrF,NumStr numStrS);
 
 #endif
 	
