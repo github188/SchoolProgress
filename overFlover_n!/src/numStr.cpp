@@ -55,38 +55,17 @@ void NumStr::printData(void)
 	cout<<"the strData:"<<strData<<endl;
 }
 
-/*
-NumStr loop(NumStr &numStr)
+NumStr& NumStr::operator+= (NumStr &numStrF)
 {
-	char *ptr = const_cast<char*>(numStr.strData.c_str());
-	NumStr result;
-	if(*ptr == '1' || *ptr == '0')
-	{
-		result.fillNewData("0");
-		return result;
-	}
-	return numStr * loop(--numStr);
-}
-
-*/
-
-NumStr operator+(NumStr &numStrF,NumStr &numStrS)
-{
-	NumStr resultNumStr;
 	string result;
-	if(numStrF.empty() && numStrS.empty())
-	{
-		return resultNumStr;
-	}
 	if(numStrF.empty())
 	{
-		resultNumStr = numStrS;
-		return resultNumStr;
+		return *this;
 	}
-	if(numStrS.empty())
+	if(strData.empty())
 	{
-		resultNumStr = numStrF;
-		return resultNumStr;
+		strData = numStrF.strData;
+		return *this;
 	}
 	
 	char *ptrF,*ptrS;
@@ -95,10 +74,10 @@ NumStr operator+(NumStr &numStrF,NumStr &numStrS)
 	bool isEnterHead = false;
 	
 	lenF = numStrF.size() - 1;
-	lenS = numStrS.size() - 1;
+	lenS = strData.size() - 1;	
 	
 	ptrF = const_cast<char *>(numStrF.strData.c_str());
-	ptrS = const_cast<char *>(numStrS.strData.c_str());
+	ptrS = const_cast<char *>(strData.c_str());
 	
 	for(;lenF >= 0 && lenS >= 0; --lenF,--lenS)
 	{
@@ -178,10 +157,104 @@ NumStr operator+(NumStr &numStrF,NumStr &numStrS)
 		result.insert(result.begin(),'0' + 1);
 	}
 	
-	resultNumStr.fillNewData(result);
+	fillNewData(result);
+	
+	return *this;
+}
+
+
+NumStr operator* (NumStr &numStrF,NumStr &numStrS)
+{
+	NumStr resultNumStr;
+	string result;
+	if(numStrF.empty() || numStrS.empty())
+	{
+		return resultNumStr;
+	}
+	
+	char *ptrF,*ptrS;
+	int lenF,lenS;
+	size_t lastNumF,lastNumS,lastNumSum;
+	int  isEnterHead = 0;
+	
+	lenF = numStrF.size() - 1;
+	lenS = numStrS.size() - 1;
+	
+	ptrF = const_cast<char *>(numStrF.strData.c_str());
+	ptrS = const_cast<char *>(numStrS.strData.c_str());
+	
+	for(;lenF >= 0; --lenF)
+	{
+		size_t _lenS_ = lenF;
+
+		while(_lenS_ < numStrF.size() - 1)
+		{
+			result.insert(result.begin(),'0');
+			++_lenS_;
+		}
+			
+		lastNumF = *(ptrF + lenF) - '0';
+		
+		for(int _lenS = lenS;_lenS >= 0; --_lenS)
+		{			
+			
+			lastNumS = *(ptrS + _lenS) - '0';	
+			
+			lastNumSum = lastNumF * lastNumS;
+			
+			
+			lastNumSum += isEnterHead;
+			isEnterHead = lastNumSum / 10;	
+
+			result.insert(result.begin(),'0' + lastNumSum % 10);
+		}
+		
+		if(isEnterHead != 0)
+		{
+			result.insert(result.begin(),'0' + isEnterHead);
+			isEnterHead = 0;
+		}
+		
+		NumStr NumF(result);
+		
+		resultNumStr += NumF;
+		
+		result.clear();
+	}
+
+	ptrF = const_cast<char *>(resultNumStr.strData.c_str());
+	if(*ptrF == '0')
+	{
+		resultNumStr.strData.erase(resultNumStr.strData.begin());
+	}
 	
 	return resultNumStr;
 }
 
+NumStr loop(NumStr &numStr)
+{
+	char *ptr = const_cast<char*>(numStr.strData.c_str());
+	NumStr result;
+	string resultStr;
+	if(numStr.empty())
+	{
+		cout<<"loop the numStr is empty:"<<endl;
+		resultStr = "0";
+		result.fillNewData(resultStr);
+		return result;
+	}
+	
+	if(numStr.size() == 1)
+	{
+		if(*ptr == '1' || *ptr == '0')
+		{		
+			resultStr = "0";
+			result.fillNewData(resultStr);
+			return result;
+		}
+	}
+	
+	return numStr * (loop(--numStr));
+}
 
 

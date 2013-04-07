@@ -9,13 +9,21 @@ using namespace std;
 	
 int main(void)
 {
-	string data1("1000"),data2("1000");
-	NumStr numStr1(data1),numStr2(data1);
-	--numStr1;
-	numStr1.printData();
+	string data1("5"),data2("12");
+	NumStr numStr1(data1),numStr2(data2);
+//	--numStr1;
+//	numStr1.printData();
 	
-	NumStr result (numStr1 + numStr2);
+//	numStr1 += numStr2;
+//	numStr1.printData();
+	
+//	NumStr result = numStr1 * numStr2;
+//	result.printData();
+
+	NumStr result = loop(numStr1);
 	result.printData();
+	
+	
 	return 1;
 }
 	
