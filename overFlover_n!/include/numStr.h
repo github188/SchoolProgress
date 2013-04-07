@@ -23,7 +23,7 @@ class NumStr
 		
 	}
 	
-	NumStr(NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
+	NumStr(const NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
 	{
 		
 	}
@@ -50,13 +50,16 @@ class NumStr
 	}
 	
 	
-	inline void operator =(NumStr &_strData)
+	inline NumStr& operator =(NumStr &_strData)
 	{
 		strData = _strData.strData;
+		scale = _strData.scale;
 	}
 	
 	
 	NumStr& operator--(void);
+	
+	NumStr& operator+= (NumStr &numStrF);
 	
 	void reduceOne(void);
 	
@@ -65,15 +68,12 @@ class NumStr
 	
 };
 
-//NumStr loop(NumStr &numStr);
+NumStr loop(NumStr &numStr);
 
 
 NumStr operator+(NumStr &numStrF,NumStr &numStrS);
 
-/*
-string operator*(NumStr &numStrF,NumStr &numStrS);
-
-*/
+NumStr operator* (NumStr &numStrF,NumStr &numStrS);
 
 #endif
 	
