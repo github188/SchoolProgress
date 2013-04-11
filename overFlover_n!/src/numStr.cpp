@@ -170,10 +170,7 @@ NumStr operator* (NumStr numStrF,NumStr numStrS)
 	if(numStrF.empty() || numStrS.empty())
 	{
 		return resultNumStr;
-	}
-
-	cout<<"numStrF:"<<numStrF.strData<<endl;	
-	cout<<"numStrS:"<<numStrS.strData<<endl;	
+	}	
 	char *ptrF,*ptrS;
 	int lenF,lenS;
 	size_t lastNumF,lastNumS,lastNumSum;
@@ -229,48 +226,63 @@ NumStr operator* (NumStr numStrF,NumStr numStrS)
 	{
 		resultNumStr.strData.erase(resultNumStr.strData.begin());
 	}
-	
-//	cout<<"resultNumStr:"<<resultNumStr.strData<<endl;
 
 	return resultNumStr;
 }
 
-NumStr loop(NumStr numStr)
+
+bool operator < (NumStr &numStrL,NumStr &numStrR)
 {
-	char *ptr = const_cast<char*>(numStr.strData.c_str());
-	NumStr result;
-	string resultStr;
-	if(numStr.empty())
+	size_t lenR,lenL;
+	
+	if(numStrL.empty())
 	{
-		cout<<"loop the numStr is empty:"<<endl;
-		resultStr = "0";
-		result.fillNewData(resultStr);
-		return result;
+		return numStrR.empty() ? false :true;
 	}
 	
-	if(numStr.size() == 1)
+	if(numStrR.empty())
 	{
-		if(*ptr == '1' || *ptr == '0')
+		return false;
+	}	
+	
+	lenR = numStrR.size();
+	lenL = numStrL.size();	
+	
+	if(lenL != lenR)
+	{
+		return lenL < lenR;
+	}	
+	
+	for(int index = 0;index < lenR;++index)
+	{
+		if(numStrL.strData[index] != numStrR.strData[index])
 		{
-			cout<<"the data is 1:"<<endl;		
-			resultStr = "1";
-			result.fillNewData(resultStr);
-			return result;
+			return numStrL.strData[index] < numStrR.strData[index];
 		}
-	}
-	
-
-	NumStr temp(numStr);
-	cout<<"numStr before:"<<temp.strData<<endl;
-
-	result = temp * loop(--numStr);
-	
-	cout<<"numStr end:"<<temp.strData<<endl;
-
-//	cout<<"resultStr:"<<result.strData<<endl;
-	
-	return result;
-//	return numStr * (loop(--numStr));
+		
+	}	
+	return false;
 }
+
+bool operator >= (NumStr &numStrL,NumStr &numStrR)
+{
+	return numStrR < numStrL;
+}
+
+void loopFor(NumStr& numStr)
+{
+	string data("1");
+	NumStr lessNum(data);
+	NumStr result = lessNum;
+	while(numStr >= lessNum)
+	{
+		result = numStr * result;
+
+		--numStr;
+	}
+	result.printData();
+}
+	
+	
 
 

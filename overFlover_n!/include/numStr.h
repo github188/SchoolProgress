@@ -63,8 +63,7 @@ class NumStr
 	
 	void reduceOne(void);
 	
-	void printData(void);			
-	
+	void printData(void);		
 	
 };
 
@@ -74,6 +73,12 @@ NumStr loop(NumStr numStr);
 NumStr operator+(NumStr &numStrF,NumStr &numStrS);
 
 NumStr operator* (NumStr numStrF,NumStr numStrS);
+
+void loopFor(NumStr& numStr);
+
+bool operator >= (NumStr &numStrL,NumStr &numStrR);
+
+bool operator < (NumStr &numStrL,NumStr &numStrR);
 
 #endif
 	
