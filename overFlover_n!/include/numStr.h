@@ -1,7 +1,7 @@
 /************************************************************
 	文件名：numStr.h
 	文件作用：类NumStr类的属性和方法的声明
-	作者：chenzhen
+	作者：flyer
 	创建日期：2013.04.01
 ************************************************************/
 #ifndef NUMSTR_H
@@ -33,9 +33,9 @@ class NumStr
 	NumStr(const NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
 	{
 		
-	}
+	} 
 
-	NumStr(void):scale(10)
+	NumStr(void):strData("0"),scale(10)
 	{
 
 	}
@@ -45,6 +45,12 @@ class NumStr
 	{
 		return strData.empty();
 	}
+	
+	/*检查进制是否合法*/
+	bool scaleIsRight(void);
+	
+	/*检查数字是否合法*/
+	bool strDataIsRight(void);
 	
 	inline bool empty(void) const
 	{
@@ -69,6 +75,7 @@ class NumStr
 	}
 	
 	
+	
 	inline NumStr& operator =(const NumStr &_strData)
 	{
 		strData = _strData.strData;
@@ -86,8 +93,7 @@ class NumStr
 	
 	friend const NumStr operator* (const NumStr& numStrF,const NumStr& numStrS);
 	
-	friend bool operator < (const NumStr &numStrL,const NumStr &numStrR);
-	
+	friend bool operator < (const NumStr &numStrL,const NumStr &numStrR);	
 };
 
 #endif
