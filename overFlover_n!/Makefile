@@ -7,12 +7,16 @@ LINK          = g++
 
 ####### Files
 object = numStr.o\
+		 asistFun.o\
 		 main.o
 	
 bin/test : $(object)
 	$(LINK) -g -o bin/test $(object) 
 	
 numStr.o : src/numStr.cpp
+	$(CXX) -g -c $< -Iinclude
+
+asistFun.o : src/asistFun.cpp
 	$(CXX) -g -c $< -Iinclude
 
 main.o : src/main.cpp

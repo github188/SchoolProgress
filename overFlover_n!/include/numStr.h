@@ -7,18 +7,25 @@
 #ifndef NUMSTR_H
 #define NUMSTR_H
 #include<iostream>
+#include<stdlib.h>
+
+typedef void (*FUN)(int errorType);
+
 using namespace std;
 
 class NumStr
 {	
-	public:
 	string strData;
 	
 	size_t scale;
 	
-	public:
+	static FUN dealErrorFun;
 	
-	NumStr(string &_strData,int _scale = 10):strData(_strData),scale(_scale)
+	/*--辅助函数*/
+	void reduceOne(void);
+	
+	public:
+	NumStr(const string &_strData,int _scale = 10):strData(_strData),scale(_scale)
 	{
 		strData = _strData;
 	}
@@ -33,17 +40,29 @@ class NumStr
 
 	}
 	
+	/*判断是否为空*/
 	inline bool empty(void)
 	{
 		return strData.empty();
 	}
 	
+	inline bool empty(void) const
+	{
+		return strData.empty();
+	}
+	
+	/*求长度*/
 	inline size_t size(void)
 	{
 		return strData.size();
 	}
 	
-	inline void fillNewData(string& newData)
+	inline size_t size(void) const
+	{
+		return strData.size();
+	}
+	
+	inline void fillNewData(const string& newData)
 	{
 		strData.clear();
 		strData = newData;
@@ -54,31 +73,22 @@ class NumStr
 	{
 		strData = _strData.strData;
 		scale = _strData.scale;
-	}
+	}	
 	
-	
+	/*--重载函数*/
 	NumStr& operator--(void);
 	
-	NumStr& operator+= (NumStr &numStrF);
+	/*重载 += 函数*/
+	NumStr& operator+= (const NumStr &numStrF);
 	
-	void reduceOne(void);
+	/*测试打印函数*/	
+	void printData(void);	
 	
-	void printData(void);		
+	friend const NumStr operator* (const NumStr& numStrF,const NumStr& numStrS);
+	
+	friend bool operator < (const NumStr &numStrL,const NumStr &numStrR);
 	
 };
-
-NumStr loop(NumStr numStr);
-
-
-NumStr operator+(NumStr &numStrF,NumStr &numStrS);
-
-NumStr operator* (NumStr numStrF,NumStr numStrS);
-
-void loopFor(NumStr& numStr);
-
-bool operator >= (NumStr &numStrL,NumStr &numStrR);
-
-bool operator < (NumStr &numStrL,NumStr &numStrR);
 
 #endif
 	

@@ -5,86 +5,76 @@
 	创建日期：2013.04.01
 ************************************************************/
 #include"numStr.h"
-#include<stdlib.h>
-using namespace std;
+#include"asistFun.h"
 
+/*--辅助函数*/
 void NumStr::reduceOne(void)
 {
 	if(strData.empty())
 	{
-		cout<<"NumStr::reduceOne the strData is empty"<<endl;
-		return;
+		cout<<"NumStr::reduceOne error the strData is empty"<<endl;
+		dealErrorFun(ERROR_EMPTY);
 	}
-	
-	char *ptr = const_cast<char*>(strData.c_str());
-	int len = strData.size() - 1;
-	int num = 0;
-	
-	if(*ptr == '0')
+		
+	if(strData[0] == '0')
 	{
-		cout<<"NumStr::reduceOne the strData is zero"<<endl;
-		return;
+		cout<<"NumStr::reduceOne error the strData is zero"<<endl;
+		dealErrorFun(ERROR_OTHRE);
 	}
+	
+	int len = strData.size() - 1;
 	
 	while(len >= 0)
 	{
-		num =  *(ptr + len) - '0';
-		if(num >= 1)
+		if(strData[len] > '0')
 		{
-			*(ptr + len) = '0' + num - 1;
+			strData[len] -= 1;
 			break;
 		}		
-		*(ptr + len) = '0' + num + scale - 1;
+		strData[len] += scale - 1;
 		--len;
 	}
 	
-	if(*ptr == '0')
+	if(strData[0] == '0')
 	{
 		strData.erase(strData.begin());
 	}
 }
 
+/*--重载函数*/
 NumStr& NumStr::operator--(void)
 {
 	reduceOne();
 	return *this;
 }
-			
+
+/*测试打印函数*/			
 void NumStr::printData(void)
 {
 	cout<<"the strData:"<<strData<<endl;
 }
 
-NumStr& NumStr::operator+= (NumStr &numStrF)
+/*重载 += 函数*/
+NumStr& NumStr::operator+= (const NumStr &numStrF)
 {
 	string result;
-	if(numStrF.empty())
+	if(numStrF.empty() || strData.empty())
 	{
-		return *this;
-	}
-	if(strData.empty())
-	{
-		strData = numStrF.strData;
-		return *this;
+		cout<<"NumStr::operator+= the argument is error empty:"<<endl;
+		dealErrorFun(ERROR_EMPTY);
 	}
 	
-	char *ptrF,*ptrS;
 	int lenF,lenS;
-	size_t lastNumF,lastNumS,lastNumSum;
+	size_t lastNumSum;
 	bool isEnterHead = false;
 	
 	lenF = numStrF.size() - 1;
 	lenS = strData.size() - 1;	
-	
-	ptrF = const_cast<char *>(numStrF.strData.c_str());
-	ptrS = const_cast<char *>(strData.c_str());
+
 	
 	for(;lenF >= 0 && lenS >= 0; --lenF,--lenS)
 	{
-		lastNumF = *(ptrF + lenF) - '0';
-		lastNumS = *(ptrS + lenS) - '0';		
-	
-		lastNumSum = lastNumF + lastNumS;
+		lastNumSum = numStrF.strData[lenF] - '0' + strData[lenS] - '0';
 		
 		if(isEnterHead)
 		{
@@ -106,9 +96,7 @@ NumStr& NumStr::operator+= (NumStr &numStrF)
 	
 	for(;lenF >= 0; --lenF)
 	{
-		lastNumF = *(ptrF + lenF) - '0';
-	
-		lastNumSum = lastNumF;
+		lastNumSum = numStrF.strData[lenF] - '0';
 		
 		if(isEnterHead)
 		{
@@ -130,9 +118,8 @@ NumStr& NumStr::operator+= (NumStr &numStrF)
 	
 	for(;lenS >= 0; --lenS)
 	{
-		lastNumS = *(ptrS + lenS) - '0';
 	
-		lastNumSum = lastNumS;
+		lastNumSum = strData[lenS] - '0';
 		
 		if(isEnterHead)
 		{
@@ -163,126 +150,12 @@ NumStr& NumStr::operator+= (NumStr &numStrF)
 }
 
 
-NumStr operator* (NumStr numStrF,NumStr numStrS)
-{
-	NumStr resultNumStr;
-	string result;
-	if(numStrF.empty() || numStrS.empty())
-	{
-		return resultNumStr;
-	}	
-	char *ptrF,*ptrS;
-	int lenF,lenS;
-	size_t lastNumF,lastNumS,lastNumSum;
-	int  isEnterHead = 0;
-	
-	lenF = numStrF.size() - 1;
-	lenS = numStrS.size() - 1;
-	
-	ptrF = const_cast<char *>(numStrF.strData.c_str());
-	ptrS = const_cast<char *>(numStrS.strData.c_str());
-	
-	for(;lenF >= 0; --lenF)
-	{
-		size_t _lenS_ = lenF;
 
-		while(_lenS_ < numStrF.size() - 1)
-		{
-			result.insert(result.begin(),'0');
-			++_lenS_;
-		}
-			
-		lastNumF = *(ptrF + lenF) - '0';
+
+
+
+	
 		
-		for(int _lenS = lenS;_lenS >= 0; --_lenS)
-		{			
-			
-			lastNumS = *(ptrS + _lenS) - '0';	
-			
-			lastNumSum = lastNumF * lastNumS;
-			
-			
-			lastNumSum += isEnterHead;
-			isEnterHead = lastNumSum / 10;	
-
-			result.insert(result.begin(),'0' + lastNumSum % 10);
-		}
-		
-		if(isEnterHead != 0)
-		{
-			result.insert(result.begin(),'0' + isEnterHead);
-			isEnterHead = 0;
-		}
-		
-		NumStr NumF(result);
-		
-		resultNumStr += NumF;
-		
-		result.clear();
-	}
-
-	ptrF = const_cast<char *>(resultNumStr.strData.c_str());
-	if(*ptrF == '0')
-	{
-		resultNumStr.strData.erase(resultNumStr.strData.begin());
-	}
-
-	return resultNumStr;
-}
-
-
-bool operator < (NumStr &numStrL,NumStr &numStrR)
-{
-	size_t lenR,lenL;
-	
-	if(numStrL.empty())
-	{
-		return numStrR.empty() ? false :true;
-	}
-	
-	if(numStrR.empty())
-	{
-		return false;
-	}	
-	
-	lenR = numStrR.size();
-	lenL = numStrL.size();	
-	
-	if(lenL != lenR)
-	{
-		return lenL < lenR;
-	}	
-	
-	for(int index = 0;index < lenR;++index)
-	{
-		if(numStrL.strData[index] != numStrR.strData[index])
-		{
-			return numStrL.strData[index] < numStrR.strData[index];
-		}
-		
-	}	
-	return false;
-}
-
-bool operator >= (NumStr &numStrL,NumStr &numStrR)
-{
-	return numStrR < numStrL;
-}
-
-void loopFor(NumStr& numStr)
-{
-	string data("1");
-	NumStr lessNum(data);
-	NumStr result = lessNum;
-	while(numStr >= lessNum)
-	{
-		result = numStr * result;
-
-		--numStr;
-	}
-	result.printData();
-}
-	
 	
 
 
