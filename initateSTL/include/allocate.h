@@ -25,6 +25,8 @@ inline void _delete(Tp *ptr)
 template<typename Tp>
 struct Allocate
 {
+	typedef Tp* point_type;
+	
 	Tp* allocate(size_t n)
 	{
 		Tp *start = (Tp*)malloc(sizeof(Tp) * n);

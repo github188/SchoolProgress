@@ -6,18 +6,13 @@
 ************************************************************/
 
 #include<iostream>
-#include"allocate.h"
-#include"iterator.h"
+#include"vector.h"
 using namespace std;
 
 int main(void)
 {
-	Allocate<int> allocate;
-	int *p = allocate.allocate();
-	
-	*p = 4;
-	
-	cout<<"p:"<<*p<<endl;
+	Vector<int> myVector(10,3);
+	cout<<"size:"<<myVector.size()<<endl;
 	
 	return 1;
 }
