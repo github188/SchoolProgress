@@ -1,7 +1,7 @@
 /************************************************************
 	文件名：asistFun.h
 	文件作用：辅助函数申明
-	作者：flyer
+	作者：chenzhen
 	创建日期：2013.04.01
 ************************************************************/
 #ifndef ASIST_FUN_H
@@ -15,11 +15,9 @@ const int ERROR_EMPTY = 1;
 /*字符串含有非数字字符错误*/
 const int ERROR_DIGST = 2;
 
-/*进制不相等错误*/
-const int ERROR_SCALE = 3;
+/*字符串含有非数字字符错误*/
+const int ERROR_OTHRE = 3;
 
-/*其他错误*/
-const int ERROR_OTHRE = 4;
 
 
 /*重载乘号*/

@@ -1,5 +1,6 @@
 
 #include<iostream>
+#include<stdio.h>
 using namespace std;
 
 class A
@@ -28,7 +29,7 @@ class AA:public A
 
 class B
 {	
-	private:
+	public:
 		virtual void fun()
 		{
 			cout<<"call B:fun()"<<endl;
@@ -51,9 +52,12 @@ int main(void)
 	B *b = new BB;
 	
 	typedef void (*Fun)(void);
+
 	
-	/*调用的是B里面的,虚函数的弊端*,一般首地址为指向vtbl的指针，也就是vptr*/
 	Fun fptr = (Fun)*((int*)*(int*)(b) + 0);
+	
+//	printf("&(B::fun):0x%x",&(B::fun));
+	printf("&fptr:0x%x\n",fptr);
 	
 	fptr();	
 	

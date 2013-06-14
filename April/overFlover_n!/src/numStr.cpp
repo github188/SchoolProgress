@@ -1,7 +1,7 @@
 /************************************************************
 	文件名：numStr.cpp
 	文件作用：类NumStr类的属性和方法的声明
-	作者：flyer
+	作者：chenzhen
 	创建日期：2013.04.01
 ************************************************************/
 #include"numStr.h"
@@ -48,10 +48,10 @@ NumStr& NumStr::operator--(void)
 	return *this;
 }
 
-/*测试打印函数(以进制的格式）*/			
+/*测试打印函数*/			
 void NumStr::printData(void)
 {
-	cout<<"the scale :"<<scale<<" the strData:"<<strData<<endl;
+	cout<<"the strData:"<<strData<<endl;
 }
 
 /*重载 += 函数*/
@@ -62,12 +62,6 @@ NumStr& NumStr::operator+= (const NumStr &numStrF)
 	{
 		cout<<"NumStr::operator+= the argument is error empty:"<<endl;
 		dealErrorFun(ERROR_EMPTY);
-	}
-	
-	if(numStrF.scale != scale)
-	{
-		cout<<"NumStr::operator+= the scale must be same error:"<<endl;
-		dealErrorFun(ERROR_SCALE);
 	}
 	
 	int lenF,lenS;
@@ -88,13 +82,13 @@ NumStr& NumStr::operator+= (const NumStr &numStrF)
 			isEnterHead = false;
 		}
 		
-		if(lastNumSum < scale)
+		if(lastNumSum < 10)
 		{
 			result.insert(result.begin(),'0' + lastNumSum);
 		}
 		else
 		{
-			result.insert(result.begin(),'0' + lastNumSum - scale);
+			result.insert(result.begin(),'0' + lastNumSum - 10);
 			
 			isEnterHead = true;
 		}
@@ -110,13 +104,13 @@ NumStr& NumStr::operator+= (const NumStr &numStrF)
 			isEnterHead = false;
 		}
 		
-		if(lastNumSum < scale)
+		if(lastNumSum < 10)
 		{
 			result.insert(result.begin(),'0' + lastNumSum);
 		}
 		else
 		{
-			result.insert(result.begin(),'0' + lastNumSum - scale);
+			result.insert(result.begin(),'0' + lastNumSum - 10);
 			
 			isEnterHead = true;
 		}
@@ -133,13 +127,13 @@ NumStr& NumStr::operator+= (const NumStr &numStrF)
 			isEnterHead = false;
 		}
 		
-		if(lastNumSum < scale)
+		if(lastNumSum < 10)
 		{
 			result.insert(result.begin(),'0' + lastNumSum);
 		}
 		else
 		{
-			result.insert(result.begin(),'0' + lastNumSum - scale);
+			result.insert(result.begin(),'0' + lastNumSum - 10);
 			
 			isEnterHead = true;
 		}
@@ -155,46 +149,6 @@ NumStr& NumStr::operator+= (const NumStr &numStrF)
 	return *this;
 }
 
-/*检查数字是否合法*/
-bool NumStr::strDataIsRight(void)
-{
-	if(strData.empty())
-	{
-		cout<<"the num is illeay:"<<endl;
-		return false;
-	}
-	
-	if(strData.size() == 1 && strData[0] == '0')
-	{
-		cout<<"the num is illeay:"<<endl;
-		return false;
-	}
-	
-	for(int index = 0;index < strData.size();++index)
-	{
-		if(!isdigit(strData[index]))
-		{
-			cout<<"the num contain  illeay num :"<<strData[index]<<endl;
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-/*检查进制是否合法*/
-bool NumStr::scaleIsRight(void)
-{
-	/*测试暂定上线32*/
-	if(scale < 2 || scale > 32)
-	{
-		cout<<"the scale is illeay:"<<scale<<endl;
-		return false;
-	}	
-	return true;
-}
-		
-	
 
 
 

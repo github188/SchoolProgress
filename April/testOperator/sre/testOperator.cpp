@@ -19,8 +19,9 @@ class NumStr
 	NumStr(string &_strData,int _scale = 10):strData(_strData),scale(_scale)
 	{
 		
-	}	
-	NumStr(const NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
+	}
+	
+	NumStr(NumStr &_strData):strData(_strData.strData),scale(_strData.scale)
 	{
 		
 	}
@@ -42,7 +43,7 @@ class NumStr
 	}
 	
 	
-	inline NumStr&  operator =(const NumStr &_strData)
+	inline NumStr& operator =(NumStr &_strData)
 	{
 		strData = _strData.strData;
 		scale = _strData.scale;
@@ -53,7 +54,7 @@ class NumStr
 
 
 
-NumStr operator+(const NumStr &numStrF,const NumStr &numStrS)
+NumStr& operator+(NumStr &numStrF,NumStr &numStrS)
 {	
 	string result;
 	
@@ -61,8 +62,9 @@ NumStr operator+(const NumStr &numStrF,const NumStr &numStrS)
 	
 	result +=  numStrS.strData;
 	
-	//这样为什么会报错
+//	NumStr p(result);	
 	return NumStr(result);
+//	return p;
 }
 
 int main(void)
@@ -71,7 +73,7 @@ int main(void)
 	NumStr g1(data),g2(data),g3;
 	
 	//为什么不能赋值
-	g3 = g1 + g2;
+//	NumStr g4 = (g1 + g2);
 	
 	return 1;
 }

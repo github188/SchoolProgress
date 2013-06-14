@@ -10,7 +10,6 @@ const void printPtrArr(const char* const ptrArr[],size_t length)
 	}
 }
 
-/*指针很灵活，模拟alloc中的free_list*/
 void chgePtrArr(char* ptrArr[])
 {
 	char *p = ptrArr[3];

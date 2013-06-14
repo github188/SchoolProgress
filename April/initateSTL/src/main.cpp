@@ -11,7 +11,7 @@ using namespace std;
 
 int main(void)
 {
-	Vector<int> myVector(10,3);
+	Vector<int> myVector;
 	cout<<"size:"<<myVector.size()<<endl;
 	
 	return 1;

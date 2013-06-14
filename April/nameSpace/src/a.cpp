@@ -1,5 +1,5 @@
 #include"a.h"
-using namespace CHEN;
+//using namespace CHEN::printAA(char *a);
 
 void printAA(char *a)
 {

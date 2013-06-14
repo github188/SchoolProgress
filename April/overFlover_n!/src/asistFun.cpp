@@ -1,7 +1,7 @@
 /************************************************************
 	文件名：asistFun.cpp
 	文件作用：辅助函数
-	作者：flyer
+	作者：chenzhen
 	创建日期：2013.04.01
 ************************************************************/
 #include"asistFun.h"
@@ -9,12 +9,13 @@
 /*重载乘号*/
 const NumStr operator* (const NumStr &numStrF,const NumStr &numStrS)
 {
-	string result;
 	NumStr resultNumStr;
+	string result;
 	if(numStrF.empty() || numStrS.empty())
 	{
 		cout<<"operator* the argument is empty:"<<endl;
 		errorDealFun(ERROR_EMPTY);
+		return NumStr();
 	}	
 
 	int lenF,lenS;
@@ -23,6 +24,7 @@ const NumStr operator* (const NumStr &numStrF,const NumStr &numStrS)
 	
 	lenF = numStrF.size() - 1;
 	lenS = numStrS.size() - 1;
+	
 	for(;lenF >= 0; --lenF)
 	{
 		size_t _lenS_ = lenF;
@@ -32,7 +34,7 @@ const NumStr operator* (const NumStr &numStrF,const NumStr &numStrS)
 			result.insert(result.begin(),'0');
 			++_lenS_;
 		}
-		
+			
 		lastNumF = numStrF.strData[lenF] - '0';
 		
 		for(int _lenS = lenS;_lenS >= 0; --_lenS)
@@ -115,6 +117,7 @@ void loopFor(NumStr& numStr)
 	while(numStr >= lessNum)
 	{
 		result = numStr * result;
+
 		--numStr;
 	}
 	result.printData();
@@ -131,12 +134,6 @@ void errorDealFun(int errorType)
 	{
 		cerr<<"the contain is ERROR_DIGST:"<<errorType<<endl;
 	}
-	
-	if(errorType == ERROR_SCALE)
-	{
-		cerr<<"the contain is ERROR_SCALE:"<<errorType<<endl;
-	}
-	
 	if(errorType == ERROR_OTHRE)
 	{
 		cerr<<"the contain is ERROR_OTHRE:"<<errorType<<endl;
