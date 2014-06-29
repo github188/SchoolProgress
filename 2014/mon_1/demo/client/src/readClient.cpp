@@ -1,11 +1,7 @@
-//读大厅服务器配置
+//读客户端配置
 #include"readConf.h"
-#include"hallSer.h"
-#include"com.h"
-#include"fun.h"
 #include<libxml/parser.h>
-extern set<IpInfo> ipInfoSet;
-void readHallSer(const char *fileName)
+Client* readClient(const char *fileName)
 {
 	xmlDocPtr doc = xmlReadFile(fileName,"UTF-8",XML_PARSE_RECOVER);
 	if(NULL == doc)
@@ -22,13 +18,13 @@ void readHallSer(const char *fileName)
 	char ip[IPADDR] = {'\0'};
     char name[SERNAME] = {'\0'};
     size_t port;
-    size_t upperNum;
     bool flg = false;
+    Client *client = NULL;
 	curNode = curNode->xmlChildrenNode;	
     xmlChar *val;
 	while(curNode)
 	{
-		if(!xmlStrcmp(curNode->name,(const xmlChar *)"hallSer"))
+		if(!xmlStrcmp(curNode->name,(const xmlChar *)"client"))
 		{
 			xmlAttrPtr attrPtr = curNode->properties;
 			while(attrPtr)
@@ -56,52 +52,36 @@ void readHallSer(const char *fileName)
                         perror("gameSer port error");
                         exit(0);
                     }
-                    port = portFlg;				
+                    port = portFlg;		
+                    flg = true;                    
 				}
-                else if(!xmlStrcmp(attrPtr->name,(const xmlChar*)"upperNum"))
-				{
-					val = xmlGetProp(curNode,(const xmlChar*)"upperNum");
-                    int upperNumFlg = atoi(reinterpret_cast<const char*>(val));
-                    xmlFree(val);
-                    if(upperNumFlg <= 0)
-                    {
-                        perror("gameSer upperNumFlg error");
-                        exit(0);
-                    }
-                    upperNum = upperNumFlg;
-                    flg = true;
-				}						
 				if(flg)
 				{
-					IpInfo ipInfo(ip,name,port,upperNum);
-                    if(chkIpInfo(ipInfo))
+                    try
                     {
-                        perror("ipInfo error again");
-                        exit(0);
+                        client = new Client(ip,name,port);
                     }
-                    ipInfoSet.insert(ipInfo);
+                    catch(...)
+                    {
+                        perror("readClient error client is NULL");
+                        delete client;
+                        client = NULL;
+                    }
+                    
                     memset(ip,'\0',sizeof(ip));
                     memset(name,'\0',sizeof(name));
                     port = 0;
-                    upperNum = 0;
-                    flg = false;
+                    break;
 				}			
 				attrPtr = attrPtr->next;				
 			}	
 		}
 		curNode = curNode->next;
+        if(flg)
+        {
+            break;
+        }
 	}
     xmlFreeDoc(doc);
-    HallSer *inst = NULL;
-    try
-    {
-        inst = new HallSer();
-    }
-    catch(...)
-    {
-        delete inst;
-        inst = NULL;
-        exit(0);
-    }
-    
+    return client;
 }

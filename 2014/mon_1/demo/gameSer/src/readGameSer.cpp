@@ -1,11 +1,8 @@
 //读大厅服务器配置
 #include"readConf.h"
-#include"hallSer.h"
-#include"com.h"
-#include"fun.h"
+#include"gameSer.h"
 #include<libxml/parser.h>
-extern set<IpInfo> ipInfoSet;
-void readHallSer(const char *fileName)
+GameSer* readGameSer(const char *fileName)
 {
 	xmlDocPtr doc = xmlReadFile(fileName,"UTF-8",XML_PARSE_RECOVER);
 	if(NULL == doc)
@@ -24,11 +21,12 @@ void readHallSer(const char *fileName)
     size_t port;
     size_t upperNum;
     bool flg = false;
+    GameSer *gameSer = NULL;
 	curNode = curNode->xmlChildrenNode;	
     xmlChar *val;
 	while(curNode)
 	{
-		if(!xmlStrcmp(curNode->name,(const xmlChar *)"hallSer"))
+		if(!xmlStrcmp(curNode->name,(const xmlChar *)"gameSer"))
 		{
 			xmlAttrPtr attrPtr = curNode->properties;
 			while(attrPtr)
@@ -73,35 +71,33 @@ void readHallSer(const char *fileName)
 				}						
 				if(flg)
 				{
-					IpInfo ipInfo(ip,name,port,upperNum);
-                    if(chkIpInfo(ipInfo))
+                    try
                     {
-                        perror("ipInfo error again");
-                        exit(0);
+                        gameSer = new GameSer(ip,name,port,upperNum);
                     }
-                    ipInfoSet.insert(ipInfo);
+                    catch(...)
+                    {
+                        perror("readGameSer error gameSer NULL");
+                        delete gameSer;
+                        gameSer = NULL;
+                    }
+                    
+					cout<<"ip:"<<ip <<"port:"<<port<<endl;
                     memset(ip,'\0',sizeof(ip));
                     memset(name,'\0',sizeof(name));
                     port = 0;
                     upperNum = 0;
-                    flg = false;
+                    break;
 				}			
 				attrPtr = attrPtr->next;				
 			}	
 		}
 		curNode = curNode->next;
+        if(flg)
+        {
+            break;
+        }
 	}
     xmlFreeDoc(doc);
-    HallSer *inst = NULL;
-    try
-    {
-        inst = new HallSer();
-    }
-    catch(...)
-    {
-        delete inst;
-        inst = NULL;
-        exit(0);
-    }
-    
+    return gameSer;
 }

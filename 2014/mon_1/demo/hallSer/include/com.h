@@ -1,10 +1,23 @@
 #ifndef COM_H
 #define COM_H
+#include<iostream>
 #include<set>
+#include<vector>
+#include<map>
+#include<string.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<arpa/inet.h>
+using namespace std;
 
 //宏定义处
 #define IPADDR 20          //ip地址长度
 #define SERNAME 40         //服务器名称长度
+
+#define HALL_IP "127.0.0.1"
+#define HALL_PORT 8023
+#define HALL_NAME "flyer"
+#define HALL_UPPER 1024
 
 typedef unsigned long int ULI;
 
@@ -33,7 +46,7 @@ typedef struct IpInfo
             upperNum = 0;
         }
     public:
-   		IpInfo(const char *_ip,const char *_name,size_t port,ULI _upperNum)
+   		IpInfo(const char *_ip,const char *_name,size_t _port,ULI _upperNum)
 		{
 			strncpy(ip,_ip,sizeof(ip));
 			strncpy(name,_name,sizeof(name));
@@ -54,14 +67,15 @@ typedef struct IpInfo
             signVal(ipInfo);
         }
         
-        bool operator<(const IpInfo &ipInfo)
+        bool operator<(const IpInfo &ipInfo) const
         {
-            return strncmp(ip,ipInfo.ip);
+            
+            return strncmp(ip,ipInfo.ip,sizeof(ip)) == -1 ? true : false;
         }
         
-        bool operator==(const IpInfo &ipInfo)
+        bool operator==(const IpInfo &ipInfo) const
         {
-           return strncmp(ip,ipInfo.ip) == 0 ? port == ipInfo.port : false;
+           return strncmp(ip,ipInfo.ip,sizeof(ip)) == 0 ? port == ipInfo.port : false;
         }
         
         ~IpInfo(void)
@@ -69,6 +83,4 @@ typedef struct IpInfo
             init();
         }   
 }IpInfo;
-
-
 #endif

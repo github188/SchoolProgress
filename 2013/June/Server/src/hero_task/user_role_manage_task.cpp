@@ -389,7 +389,6 @@ void sendHeroTaskInfo(Hero *myHero, int flag)
 	{
 		sprintf(taskInfoMsg + strlen(taskInfoMsg), ",%d", myHero->isTaskChaptReward(i + 1));
 	}
-
 	send_msg(myHero->getFd(), taskInfoMsg);
 	// char isPassChaptMsg[1024] = {0};
 	// sprintf(isPassChaptMsg, "5,41");
