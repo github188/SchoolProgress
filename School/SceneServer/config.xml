@@ -1,0 +1,19 @@
+<Config>
+	<SuperServer>
+		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/superserver.log</logfilename>
+	</SuperServer>
+	
+	<RecordServer>
+		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/recordserver.log</logfilename>
+	</RecordServer>
+	
+	<GatewayServer>
+		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/gatewayserver.log</logfilename>
+	</GatewayServer>
+	
+	<SessionServer>
+		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/sessionserver.log</logfilename>
+	</SessionServer>
+
+</Config>
+
