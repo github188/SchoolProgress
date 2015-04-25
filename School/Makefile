@@ -9,7 +9,7 @@ BUILD_COM_DIR = common
 BUILD_SUPER_SERVER_DIR = SuperServer
 BUILD_RECORD_SERVER_DIR = RecordServer
 BUILD_SESSION_SERVER_DIR = SessionServer
-BUILD_SCENES_SERVER_DIR = ScenesServer
+BUILD_SCENE_SERVER_DIR = SceneServer
 
 all:
 	@(cd ${BUILD_PROTOL_DIR}; make cleanlib)
@@ -18,7 +18,7 @@ all:
 	@(cd ${BUILD_SUPER_SERVER_DIR}; make cleanlib)
 	@(cd ${BUILD_RECORD_SERVER_DIR}; make cleanlib)
 	@(cd ${BUILD_SESSION_SERVER_DIR}; make cleanlib)
-	@(cd ${BUILD_SCENES_SERVER_DIR}; make cleanlib)
+	@(cd ${BUILD_SCENE_SERVER_DIR}; make cleanlib)
 
 	@(cd ${BUILD_PROTOL_DIR}; make)
 	@(cd ${BUILD_BASE_DIR}; make)
@@ -26,7 +26,7 @@ all:
 	@(cd ${BUILD_SUPER_SERVER_DIR}; make)
 	@(cd ${BUILD_RECORD_SERVER_DIR}; make)
 	@(cd ${BUILD_SESSION_SERVER_DIR}; make)
-	@(cd ${BUILD_SCENES_SERVER_DIR}; make)
+	@(cd ${BUILD_SCENE_SERVER_DIR}; make)
 clean:
 	@echo 'start clean...'
 	@($(RM) $(EXEC))
@@ -36,6 +36,6 @@ clean:
 	@(cd ${BUILD_SUPER_SERVER_DIR}; make clean)
 	@(cd ${BUILD_RECORD_SERVER_DIR}; make clean)
 	@(cd ${BUILD_SESSION_SERVER_DIR}; make clean)
-	@(cd ${BUILD_SCENES_SERVER_DIR}; make clean)
+	@(cd ${BUILD_SCENE_SERVER_DIR}; make clean)
 	@echo 'Finished!'
 	@echo ''
