@@ -15,10 +15,10 @@ int main()
 {
 	initGlobalVal();	
 	Global::logger = new Logger("SU");
-	Global::logger->setLevel( ( const char* )Global::config["LoggerLevel"] );
+	Global::logger->setLevel( (const char*)Global::config["LoggerLevel"] );
 	if( strlen( Global::config["logfilename"] ) )
 	{
-		Global::logger->setFile( ( const char * )Global::config["logfilename"] );
+		Global::logger->setFile( (const char*)Global::config["logfilename"] );
 	}
 	if(strcmp( "true",Global::config["daemon"] ) == 0 )
 	{

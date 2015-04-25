@@ -4,43 +4,49 @@
 Logger::Logger(char *name)
 {
 	m_name = name;
-	fp_file = NULL;
-	m_day = 0;
-	m_file = "/home/flyer/flyer/School/log/";
+	m_hourFile = NULL;
+	m_fpFile = NULL;
+	m_hour = 0;
+	m_file = "/home/flyer/flyer/SchoolProgress/trunk/School/log/";
 	m_level = LEVEL_ALL;
-	fp_console = stdout;
+	m_Console = stdout;
 }
 
 Logger::~Logger()
 {
-	if( NULL != fp_file )
+	if(m_fpFile)
 	{
-		fclose(fp_file);
-		fp_file = NULL;
+		fclose(m_fpFile);
+		m_fpFile = NULL;
+	}
+	if(m_hourFile)
+	{
+		fclose(m_hourFile);
+		m_hourFile= NULL;
 	}
 }
 
 void Logger::debug(const char* pattern,...)
 {
-	if( m_level > LEVEL_DEBUG ) return;
+	CheckConditonVoid(m_level<=LEVEL_DEBUG);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(LEVEL_DEBUG,pattern,vp);
 	va_end(vp);
 }
+
 void Logger::setFile( const char *fileName )
 {
-	logMutex.lock();
+	m_logMutex.lock();
 	m_file = fileName;
-	logMutex.unlock();
+	m_logMutex.unlock();
 }
-
 
 void Logger::setLevel(const LogLevel level)
 {
-	logMutex.lock();
+	m_logMutex.lock();
 	m_level = level;
-	logMutex.unlock();
+	m_logMutex.unlock();
 }
 
 void Logger::setLevel(const std::string &level)
@@ -55,7 +61,7 @@ void Logger::setLevel(const std::string &level)
 
 void Logger::warn(const char *pattern,...)
 {
-	if(m_level > LEVEL_WARN) return;
+	CheckConditonVoid(m_level<=LEVEL_WARN);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(LEVEL_WARN,pattern,vp);
@@ -64,7 +70,7 @@ void Logger::warn(const char *pattern,...)
 
 void Logger::fatal(const char *pattern,...)
 {
-	if(m_level > LEVEL_FATAL) return;
+	CheckConditonVoid(m_level<=LEVEL_FATAL);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(LEVEL_FATAL,pattern,vp);
@@ -73,7 +79,7 @@ void Logger::fatal(const char *pattern,...)
 
 void Logger::info(const char *pattern,...)
 {
-	if(m_level > LEVEL_ERROR) return;
+	CheckConditonVoid(m_level<=LEVEL_ERROR);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(LEVEL_INFO,pattern,vp);
@@ -82,7 +88,7 @@ void Logger::info(const char *pattern,...)
 
 void Logger::error(const char* pattern,...)
 {
-	if( m_level > LEVEL_ERROR ) return;
+	CheckConditonVoid(m_level<=LEVEL_ERROR);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(LEVEL_ERROR,pattern,vp);
@@ -91,7 +97,7 @@ void Logger::error(const char* pattern,...)
 
 void Logger::log(const LogLevel level,const char * pattern,...)
 {
-	if( m_level > level ) return;
+	CheckConditonVoid(m_level<=level);
 	va_list vp;
 	va_start(vp,pattern);
 	logva(level,pattern,vp);
@@ -100,50 +106,63 @@ void Logger::log(const LogLevel level,const char * pattern,...)
 
 void Logger::logva(const LogLevel level,const char* pattern,va_list vp)
 {
-	if( m_level > level ) return;
+	CheckConditonVoid(m_level<=level);
 	char szName[100] = {'\0'};
 	SYSTEMTIME systemTime;
-	if(!getSystemTime(&systemTime)) return;
-	logMutex.lock();
-	if( !m_file.empty() )
+	CheckConditonVoid(getSystemTime(&systemTime));
+	m_logMutex.lock();
+	if(!m_file.empty())
 	{
-		if( m_day != systemTime.wDay )
+		if(m_hour != systemTime.wHour)
 		{
-			if( NULL != fp_file )
+			if(m_hourFile)
 			{
-				fclose( fp_file );
+				fclose(m_hourFile);
 			}
 			snprintf(szName,sizeof(szName),"%s%04d%02d%02d.log",m_file.c_str(),systemTime.wYear,systemTime.wMonth,systemTime.wDay);
-			fp_file = fopen(szName,"at");
-			m_day = systemTime.wDay;
+			m_hourFile = fopen(szName,"at");
+			m_hour = systemTime.wHour;
+		}
+		if(!m_fpFile)
+		{
+			m_fpFile = fopen(m_file.c_str(),"at");
 		}
 	}
-	if(NULL != fp_file)
+	if(m_hourFile)
 	{
-		fprintf(fp_file,"[%s] ",m_name.c_str());
-		fprintf(fp_file,"%04d/%02d/%02d ",systemTime.wYear,systemTime.wMonth,systemTime.wDay);
-		fprintf(fp_file,"%02d:%02d:%02d ",systemTime.wHour,systemTime.wMinute,systemTime.wSecond);
-	 	vfprintf(fp_file,pattern,vp);
-		fprintf(fp_file,"\n");
-		fflush(fp_file);
+		fprintf(m_hourFile,"[%s] ",m_name.c_str());
+		fprintf(m_hourFile,"%04d/%02d/%02d ",systemTime.wYear,systemTime.wMonth,systemTime.wDay);
+		fprintf(m_hourFile,"%02d:%02d:%02d ",systemTime.wHour,systemTime.wMinute,systemTime.wSecond);
+	 	vfprintf(m_hourFile,pattern,vp);
+		fprintf(m_hourFile,"\n");
+		fflush(m_hourFile);
 	}
-	if(NULL != fp_console)
+	if(m_fpFile)
 	{
-		fprintf(fp_console,"[%s] ",m_name.c_str());
-		fprintf(fp_console,"%04d/%02d/%02d ",systemTime.wYear,systemTime.wMonth,systemTime.wDay);
-		fprintf(fp_console,"%02d:%02d:%02d ",systemTime.wHour,systemTime.wMinute,systemTime.wSecond);
-		vfprintf(fp_console,pattern,vp);
-		fprintf(fp_console,"\n");
-		fflush(fp_console);
+		fprintf(m_fpFile,"[%s] ",m_name.c_str());
+		fprintf(m_fpFile,"%04d/%02d/%02d ",systemTime.wYear,systemTime.wMonth,systemTime.wDay);
+		fprintf(m_fpFile,"%02d:%02d:%02d ",systemTime.wHour,systemTime.wMinute,systemTime.wSecond);
+	 	vfprintf(m_fpFile,pattern,vp);
+		fprintf(m_fpFile,"\n");
+		fflush(m_fpFile);
 	}
-	logMutex.unlock();
+	if(m_Console)
+	{
+		fprintf(m_Console,"[%s] ",m_name.c_str());
+		fprintf(m_Console,"%04d/%02d/%02d ",systemTime.wYear,systemTime.wMonth,systemTime.wDay);
+		fprintf(m_Console,"%02d:%02d:%02d ",systemTime.wHour,systemTime.wMinute,systemTime.wSecond);
+		vfprintf(m_Console,pattern,vp);
+		fprintf(m_Console,"\n");
+		fflush(m_Console);
+	}
+	m_logMutex.unlock();
 }
 
 void Logger::removeConsole()
 {
-	logMutex.lock();
-	fp_console = NULL;
-	logMutex.unlock();
+	m_logMutex.lock();
+	m_Console = NULL;
+	m_logMutex.unlock();
 }
 
 const char* Logger::getName()

@@ -21,19 +21,20 @@ class Logger
 			LEVEL_ALL = 0
 		}LogLevel;
 	private:
-		FILE *fp_file;
-		FILE *fp_console;
-		int m_day;
+		FILE *m_hourFile;
+		FILE *m_Console;
+		FILE *m_fpFile;
+		int m_hour;
 		std::string m_name;
 		std::string m_file;
 		LogLevel m_level;
-		Mutex logMutex;
+		Mutex m_logMutex;
 	private:
 		void logva(const LogLevel level,const char* pattern,va_list vp);
 		void setLevel(const LogLevel level);
 	public:
 		Logger(char *name = "Logger");
-		void setFile( const char *fileName );
+		void setFile(const char *fileName);
 		~Logger();
 		void debug(const char *pattern,...);
 		void error(const char* pattern,...);
@@ -45,7 +46,6 @@ class Logger
 		void removeConsole();
 		const char* getName();
 		void setName(const char* loggName);
-
 };
 
 #endif

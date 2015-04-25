@@ -93,7 +93,7 @@ bool SubNetService::init()
 	}
 
 	std::ostringstream oss;
-	oss << Global::logger->getName() << "_" << m_serverID;
+	oss << Global::logger->getName() << " " << m_serverID;
 	Global::logger->setName(oss.str().c_str());
 
 	m_superClient->start();
