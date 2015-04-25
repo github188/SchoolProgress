@@ -83,6 +83,7 @@ class SubNetService : public NetService
 
 		/// @brief 相应管理服务器设置服务器信息
 		void setServerInfo(const Cmd::Server::ResponseStartServerCmd *cmd);
+		const ServerEntry* getServerEntryByType(const DWORD serverType);
 		bool doCmd();
 	#if 0
 		virtual bool msgParse_SuperServer(const Cmd::NullCmd *ptNullCmd,const DWORD len);

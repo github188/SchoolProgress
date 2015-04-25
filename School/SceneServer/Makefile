@@ -12,7 +12,9 @@ LINK          = g++
 
 ####### Files
 src = sceneTimeTick.cpp\
-      SceneServer.cpp
+      SceneServer.cpp\
+	  sessionClient.cpp\
+	  recordClient.cpp
 
 object = $(patsubst %.cpp,%.o,$(src))
 depend = $(patsubst %.cpp,%.d,$(src))

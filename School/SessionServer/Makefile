@@ -12,7 +12,8 @@ LINK          = g++
 
 ####### Files
 src =  SessionServer.cpp\
-	   sessionTimeTick.cpp
+	   sessionTimeTick.cpp\
+	   recordClient.cpp
 
 object = $(patsubst %.cpp,%.o,$(src))
 depend = $(patsubst %.cpp,%.d,$(src))

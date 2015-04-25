@@ -1,6 +1,8 @@
 #include "SceneServer.h"
 #include "base/baseProperty.h"
 #include "base/testAutoPtr.h"
+#include "recordClient.h"
+#include "sessionClient.h"
 
 bool SceneServer::s_reloadConfig = false;
 bool SceneServer::s_initOK = false;
@@ -27,71 +29,26 @@ bool SceneServer::init()
 	m_antiaddiceCheck = ( std::string )Global::config["antiaddict"] == "true";
 
 	m_taskPool = new TcpTaskPool( ( DWORD )Global::config["threadPoolSize"],5000 );
-	if( !m_taskPool || !m_taskPool->init() )
-	{
-		return false;
-	}
-	if( !SubNetService::init() )
-	{
-		return false;
-	}
-# if 0
-	const ServerEntry *serverEntry = NULL;
-	serverEntry = getServerEntryByType(RECORDSERVER);
-	if( !serverEntry )
-	{
-		return false;
-	}
-	recordClient = new RecordClient("档案服务器",serverEntry->exip,serverEntry);
-	if(!recordClient)
-	{
-		return false;
-	}
 
-	if(!recordClient->connectToRecordServer())
-	{
-		return false;
-	}
+	LogErrorCheckCondition(m_taskPool && m_taskPool->init(),false,"场景服务器初始化任务池失败");
+	
+	LogErrorCheckCondition(SubNetService::init(),false,"场景服务器初始化网络服务器失败");
+	
+	const ServerEntry *serverEntry = getServerEntryByType(RECORDSERVER);
+	LogErrorCheckCondition(serverEntry,false,"场景服务器初始化找不到档案服务器");
+	
+	recordClient = new RecordClient("档案服务器",serverEntry->ip,serverEntry->port,serverEntry->serverID);
+	LogErrorCheckCondition(recordClient && recordClient->connectToRecordServer() && recordClient->start(),false,"场景服务器初始化档案服务器连接初始化失败");
 
-	if(recordClient->start())
-	{
-		Global::logger->info("初始化Record服务器模块( %s:%u )成功",serverEntry->pstrExpIP,serverEntry->Export);
-	}
+	serverEntry = getServerEntryByType(SESSIONSERVER);
+	LogErrorCheckCondition(serverEntry,false,"场景服务器初始化找不到会话服务器");
 
-	serverEntry = getServerEntryByType( SESSIONSERVER );
-	if( !serverEntry )
-	{
-		return false;
-	}
+	sessionClient = new SessionClient( "Session服务器",serverEntry->ip,serverEntry->port,serverEntry->serverID);
+	LogErrorCheckCondition(sessionClient && sessionClient->connectToSessionServer() && sessionClient->start(),false,"场景服务器初始化服务器连接初始化失败");
+	
+	LogErrorCheckCondition(SceneTimeTick::getInstance().start(),false,"场景服务器初始化时间线程启动失败");
 
-	sessionClient = new SessionClient( "Session服务器",serverEntry->pstrExtIP,serverEntry->extport);
-	if( !sessionClient )
-	{
-		return false;
-	}
-	if( !sessionClient->connectToSessionServer() )
-	{
-		return false;
-	}
-	if( sessionClient->start() )
-	{
-		Global::logger->info("初始化session服务器模块( %s:%u ) 成功",serverEntry->outNetIP,serverEntry->outNetPort);
-	}
-
-	if( !initConfig() )
-	{
-		return false;
-	}
-
-	if( SceneTimeTick::getInstance().start() )
-	{
-		Global::logger->info("初始化TimeTick服务器模块成功");
-	}
-	else
-	{
-		return false;
-	}
-
+#if 0
 	if( MonitorThread::getInstance().start() )
 	{
 		Global::logger->info("初始化监控服务器模成功");
@@ -100,12 +57,9 @@ bool SceneServer::init()
 	{
 		return false;
 	}
-	startUpOK();
-	
-	srand( SceneTimeTick::currentTime.sec() );
-
-	s_initOK = true;
 #endif
+	startUpOK();
+	s_initOK = true;
 	return true;
 }
 

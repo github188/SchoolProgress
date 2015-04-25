@@ -33,6 +33,20 @@ void SubNetService::setServerInfo(const Cmd::Server::ResponseStartServerCmd *cmd
 	Global::logger->debug("管理服务器客户端设置信息成功");
 }
 
+const ServerEntry* SubNetService::getServerEntryByType(const DWORD serverType)
+{
+	const ServerEntry *serverEntry = NULL;
+	for(std::deque<ServerEntry>::iterator iter = m_serverList.begin();iter != m_serverList.end();++iter)
+	{
+		if((*iter).serverType == serverType)
+		{
+			serverEntry = &(*iter);
+			break;
+		}
+	}
+	return serverEntry;
+}
+
 void SubNetService::startUpOver()
 {
 	m_startUp = true;

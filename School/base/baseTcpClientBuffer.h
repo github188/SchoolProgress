@@ -6,7 +6,7 @@
 class TcpClientBuffer : public TcpClientBase
 {
 	public:
-		TcpClientBuffer(const std::string &name,const std::string &ip = "127.0.0.1",const unsigned short port = 80,const unsigned short serverID = 0,const bool compress = false,const QWORD usleepTime = 50000L)
+		TcpClientBuffer(const std::string &name,const std::string &ip = "127.0.0.1",const WORD port = 80,const WORD serverID = 0,const bool compress = false,const QWORD usleepTime = 50000L)
 		:TcpClientBase(name,ip,port,serverID,compress),m_usleepTime(usleepTime),m_bufferFlg(false)
 		{
 		}
@@ -37,7 +37,7 @@ class TcpClientBuffer : public TcpClientBase
 class TcpClientBufferQueue : public TcpClientBuffer,public MessageQueue<false>
 {
 	public:
-		TcpClientBufferQueue(const std::string name,const std::string &ip = "127.0.0.1",const unsigned short port = 80,const unsigned short serverID = 0,const bool compress = false,const int usleepTime = 50000):TcpClientBuffer(name,ip,port,serverID,compress,usleepTime)
+		TcpClientBufferQueue(const std::string name,const std::string &ip = "127.0.0.1",const WORD port = 80,const WORD serverID = 0,const bool compress = false,const DWORD usleepTime = 50000) : TcpClientBuffer(name,ip,port,serverID,compress,usleepTime)
 		{
 		}
 		~TcpClientBufferQueue()
