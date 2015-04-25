@@ -188,7 +188,7 @@ int main( int argc,char **argv )
 	
 	Global::logger = new Logger( "RE" );
 	Global::config["cmdswitch"] = "true";
-	Global::config["logfilename"] = "/home/flyer/flyer/School/log/recordserver.log";
+	Global::config["logfilename"] = "/home/flyer/flyer/SchoolProgress/trunk/School/log/recordserver.log";
 	Global::config["LoggerLevel"] = "debug";
 	Global::config["daemon"] = "true";
 	Global::config["port"] = 5000;

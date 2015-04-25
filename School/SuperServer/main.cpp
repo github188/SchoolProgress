@@ -4,7 +4,7 @@
 void initGlobalVal()
 {
 	Global::config["mysql"] = "mysql://root:root@127.0.0.1:3306/flyer";
-	Global::config["logfilename"] = "/home/flyer/flyer/School/log/superserver.log";
+	Global::config["logfilename"] = "/home/flyer/flyer/SchoolProgress/trunk/School/log/superserver.log";
 	Global::config["loginServerList"] = "loginServerList.xml";
 	Global::config["threadPoolCapacity"] = 512;
 	Global::config["ifname"] = "eth0";
