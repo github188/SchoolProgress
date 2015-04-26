@@ -1,5 +1,6 @@
 #include "baseVerifyThread.h"
 #include "baseTaskPool.h"
+
 void VerifyThread::_add(TcpTask *task)
 {
 	task->addEpoll(m_kdpfd,EPOLLIN | EPOLLERR | EPOLLPRI,(void*)task);
@@ -36,6 +37,7 @@ void VerifyThread::initParam(void *param)
 {
 	m_pool = (TcpTaskPool*)param;
 }
+
 void VerifyThread::run()
 {
 	Time currentTime;

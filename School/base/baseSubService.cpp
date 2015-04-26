@@ -201,3 +201,17 @@ bool SubNetService::addServerEntry(const ServerEntry &entry)
 	return ret;
 }
 
+const ServerEntry* SubNetService::getServerEntry(const DWORD serverID)
+{
+	const ServerEntry* entry = NULL;
+	for(std::deque<ServerEntry>::iterator iter = m_serverList.begin();iter != m_serverList.end();++iter)
+	{
+		if((*iter).serverID == serverID)
+		{
+			entry = &(*iter);
+			break;
+		}
+	}
+	return entry;
+}
+

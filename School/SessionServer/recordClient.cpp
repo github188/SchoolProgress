@@ -9,6 +9,7 @@ RecordClient::RecordClient(const std::string &name,const std::string &ip,const W
 
 bool RecordClient::connectToRecordServer()
 {
+	Global::logger->debug("recordClent connect begin");
 	while(!SessionServer::getInstance().isTerminate())
 	{
 		if(TcpClientBase::connect(getIP(),getPort()))
@@ -18,8 +19,8 @@ bool RecordClient::connectToRecordServer()
 		TcpClientBase::close();
 		Thread::sleep(4);
 	}
-	return true;
-//	return sendLoginCmd();
+	Global::logger->debug("recordClent connect end");
+	return sendLoginCmd();
 }
 
 void RecordClient::run()
@@ -71,5 +72,15 @@ bool RecordClient::msgParseForward(const Cmd::NullCmd *nullCmd,const DWORD cmdLe
 
 bool RecordClient::msgParse(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
+	CheckConditonReturn(nullCmd && cmdLen,false);
+#if 0
+	switch(nullCmd->byCmd)
+	{
+		case LOGIN_SESSIONCMD:
+			{
+				return SessionLoginMsgParse(nullCmd,cmdLen);
+			}
+	}
+#endif
 	return true;
 }

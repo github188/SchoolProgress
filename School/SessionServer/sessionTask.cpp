@@ -1,13 +1,12 @@
-#include "superTask.h"
+#include "sessionTask.h"
 #include "base/baseConstruct.h"
-#include "superTaskManager.h"
 #include "base/baseSqlHandle.h"
-#include "superTimeTick.h"
-#include "SuperServer.h"
+#include "sessionTimeTick.h"
+#include "SessionServer.h"
 
-RWLock SuperTask::s_lock;
+RWLock SesssionTask::s_lock;
 
-SuperTask::SuperTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTaskQueue(sock,addr),m_sequenceTimer(2*1000L)
+SesssionTask::SesssionTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTaskQueue(sock,addr),m_sequenceTimer(2*1000L)
 {
 	bzero(m_ip,sizeof(m_ip));
 	m_port = 0;
@@ -23,7 +22,7 @@ SuperTask::SuperTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTask
 	m_recycleState = RS_First;
 	m_verify = false;
 }
-bool SuperTask::checkRecycle()
+bool SesssionTask::checkRecycle()
 {
 	CheckConditonReturn( m_recycleState!=RS_First,false );
 	if(m_recycleState == RS_Second)
@@ -33,7 +32,7 @@ bool SuperTask::checkRecycle()
 	return true;
 }
 
-bool SuperTask::verify(const DWORD serverType,const char *ip)
+bool SesssionTask::verify(const DWORD serverType,const char *ip)
 {
 	RWLock_scope_wrlock tempLock(s_lock);
 	MysqlHandle *handle = SuperServer::s_mySqlPool->getHandle();
@@ -90,7 +89,7 @@ bool SuperTask::verify(const DWORD serverType,const char *ip)
 	return true;
 }
 
-SDWORD SuperTask::verifyConnect()
+SDWORD SesssionTask::verifyConnect()
 {
 	SDWORD ret = m_mSocket.recvToBufNoPoll();
 	CheckConditonReturn(ret>0,ret);
@@ -115,7 +114,7 @@ SDWORD SuperTask::verifyConnect()
 	return -1;
 }
 
-SDWORD SuperTask::waitSync()
+SDWORD SesssionTask::waitSync()
 {
 	SDWORD retcode = m_mSocket.waitForRead();
 	CheckConditonReturn(retcode != -1,retcode);
@@ -133,7 +132,7 @@ SDWORD SuperTask::waitSync()
 		if(ptCmd->byCmd == START_SERVERCMD && ptCmd->byParam == OK_START_SERVERCMD_PARA && id == ptCmd->serverID)
 		{
 			sendCmd(ptCmd,sizeof(OkStartServerCmd));
-			Global::logger->info("服务器连接同步成功%s,%u",m_ip,m_port);
+			Global::logger->info("服务器连接同步成功");
 			return 1;
 		}
 		return 0;
@@ -154,7 +153,7 @@ SDWORD SuperTask::waitSync()
 	return 0;
 }
 
-SDWORD SuperTask::recycleConnect()
+SDWORD SesssionTask::recycleConnect()
 {
 	SDWORD ret = 1;
 	CheckConditonReturn( m_verify,ret );
@@ -176,17 +175,17 @@ SDWORD SuperTask::recycleConnect()
 	}
 	return ret;
 }
-bool SuperTask::uniqueAdd()
+bool SesssionTask::uniqueAdd()
 {
 	return SuperTaskManager::getInstance().addTask(this);
 }
 
-bool SuperTask::uniqueRemove()
+bool SesssionTask::uniqueRemove()
 {
 	return SuperTaskManager::getInstance().uniqueRemove(this);
 }
 
-bool SuperTask::msgParseStart(const Cmd::NullCmd *cmd,const DWORD cmdLen)
+bool SesssionTask::msgParseStart(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
 	Global::logger->debug("SuperTask::msgParseStart %u,%u",cmd->byCmd,cmd->byParam);
 	using namespace Cmd::Server;
@@ -217,15 +216,15 @@ bool SuperTask::msgParseStart(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 	return false;
 }
 
-bool SuperTask::msgParseForward(const Cmd::NullCmd *cmd,const DWORD cmdLen)
+bool SesssionTask::msgParseForward(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
 	return false;
 }
-bool SuperTask::msgParse(const Cmd::NullCmd *cmd,const DWORD cmdLen)
+bool SesssionTask::msgParse(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
 	return true;
 }
-bool SuperTask::notifyOther()
+bool SesssionTask::notifyOther()
 {
 	using namespace Cmd::Server;
 	NotifyOtherServer cmd;
@@ -288,7 +287,7 @@ bool SuperTask::notifyOther()
 	return true;
 }
 
-bool SuperTask::notifyMe()
+bool SesssionTask::notifyMe()
 {
 	using namespace Cmd::Server;
 	BYTE pBuffer[Socket::s_maxDataSize];

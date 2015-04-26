@@ -32,13 +32,15 @@ bool SessionServer::init()
 	LogErrorCheckCondition(SubNetService::init(),false,"会话服务器服务器初始化失败");
 
 	const ServerEntry *serverEntry = getServerEntryByType(RECORDSERVER);
-	LogErrorCheckCondition(serverEntry,false,"场景服务器初始化找不到档案服务器");
+	
+	Global::logger->debug("session here now :");
+	LogErrorCheckCondition(serverEntry,false,"会话服务器初始化找不到档案服务器");
 	
 	recordClient = new RecordClient("档案服务器",serverEntry->ip,serverEntry->port,serverEntry->serverID);
-	LogErrorCheckCondition(recordClient && recordClient->connectToRecordServer() && recordClient->start(),false,"场景服务器初始化档案服务器连接初始化失败");
+	LogErrorCheckCondition(recordClient && recordClient->connectToRecordServer() && recordClient->start(),false,"会话服务器初始化档案服务器连接初始化失败");
 	
 	LogErrorCheckCondition(SessionTimeTick::getInstance().start(),false,"会话服务器时间线程启动失败");
-
+	Global::logger->debug("session here middle :");
 	startUpOK();
 	s_initOK = true;
 	return true;
