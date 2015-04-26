@@ -71,6 +71,16 @@ bool SessionClient::msgParseForward(const Cmd::NullCmd *nullCmd,const DWORD cmdL
 
 bool SessionClient::msgParse(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
+	CheckConditonReturn(nullCmd && cmdLen,false);
+#if 0
+	switch(nullCmd->byCmd)
+	{
+		case LOGIN_SESSIONCMD:
+			{
+				return SessionLoginMsgParse(nullCmd,cmdLen);
+			}
+	}
+#endif
 	return true;
 }   
 

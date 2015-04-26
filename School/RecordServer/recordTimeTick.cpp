@@ -1,6 +1,7 @@
 #include "recordTimeTick.h"
 #include "RecordServer.h"
 #include "time.h"
+#include "recordTaskManager.h"
 
 Time RecordTimeTick::s_currentTime;
 
@@ -25,9 +26,10 @@ void RecordTimeTick::run()
 		struct timespec tv_begin;
 		clock_gettime( CLOCK_REALTIME,&tv_begin );
 		QWORD begin = tv_begin.tv_sec*1000L + tv_begin.tv_nsec/1000000L;
-		
+				
 		RecordServer::getInstance().doCmd();
-		
+		RecordTaskManager::getInstance().doCmd();
+
 		if( m_oneSec(RecordTimeTick::s_currentTime) )
 		{
 			oneSec();

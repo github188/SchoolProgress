@@ -18,8 +18,7 @@ bool RecordClient::connectToRecordServer()
 		TcpClientBase::close();
 		Thread::sleep(4);
 	}
-	return true;
-//	return sendLoginCmd();
+	return sendLoginCmd();
 }
 
 void RecordClient::run()

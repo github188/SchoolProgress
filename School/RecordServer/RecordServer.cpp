@@ -1,6 +1,7 @@
 #include "RecordServer.h"
 #include "base/baseProperty.h"
 #include "recordTimeTick.h"
+#include "recordTask.h"
 
 bool RecordServer::s_reloadConfig = false;
 bool RecordServer::s_initOK = false;
@@ -44,17 +45,15 @@ void RecordServer::startUpOver()
 
 void RecordServer::newTcpTask( const int sock,const struct sockaddr_in *addr )
 {
-#if 0
-	SceneTask *tcpTask = new SceneTask( sock,addr );
-	if( !tcpTask )
+	RecordTask *tcpTask = new RecordTask(sock,addr);
+	if(!tcpTask)
 	{
 		TEMP_FAILURE_RETRY( ::close( sock ) );
 	}
-	else if( !taskPool->addVerify( tcpTask ) )
+	else if(!m_taskPool->addVerify(tcpTask))
 	{
 		DELETE(tcpTask);
 	}
-#endif
 }
 
 bool RecordServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD cmdLen)

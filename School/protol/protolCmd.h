@@ -112,11 +112,13 @@ struct LoginStartServerCmd : public StartServerCmd
 {
 	WORD serverID;
 	DWORD serverType;
+	char ip[MAX_IP_LENGTH];
 	LoginStartServerCmd()
 	{
 		byParam = LOGIN_START_SERVERCMD_PARA;
 		serverID = 0;
 		serverType = 0;
+		bzero(ip,sizeof(ip));
 	}
 };
 

@@ -12,7 +12,8 @@ LINK          = g++
 
 ####### Files
 src =  RecordServer.cpp\
-	   recordTimeTick.cpp
+	   recordTimeTick.cpp\
+	   recordTask.cpp
 
 object = $(patsubst %.cpp,%.o,$(src))
 depend = $(patsubst %.cpp,%.d,$(src))
