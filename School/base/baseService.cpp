@@ -30,6 +30,7 @@ bool Service::init()
 	srand(time(NULL));
 	return true;
 }
+
 void Service::loop()
 {
 	s_buildTime = Global::buildTime;
@@ -46,6 +47,7 @@ void Service::loop()
 	}
 	final();
 }
+
 bool Service::checkZoneInfo(MysqlPool *pool,const char *ip,const WORD port)
 {
 	LogCheckCondition( pool,false,"区检查失败 数据库池为空" );

@@ -1,5 +1,6 @@
 #include "baseTcpTask.h"
 #include "common/nullCmd.h"
+#include "baseSubService.h"
 
 bool TcpTask::listeningSend()
 {
@@ -89,33 +90,23 @@ SDWORD TcpTask::verifyConnect()
 	msgParseStart((Cmd::NullCmd*)acceptCmd,cmdLen);
 	return m_verifyState;
 }
-#if 0
-bool TcpTask::verifyLogin(const Cmd::Server::stLoginStartServerCmd *ptCmd)
+
+bool TcpTask::verifyLogin(const Cmd::Server::LoginStartServerCmd *ptCmd)
 {
-	return true;
-	const ServerEntry *entry = SubNetService::getInstance().getServerEntry(ptCmd->ServerType);
 	m_verifyState = -1;
-	if(!entry)
-	{
-		return false;
-	}
-	char strIP[32];
-	strcpy(strIP,getIP());
-	if(ptCmd->ServerType != entry->ServerType)
-	{
-		return false;
-	}
-	if(strcmp(strIP,entry->pstrIP))
-	{
-		return false;
-	}
-	id = ptCmd->ServerID;
-	m_taskType = ptCmd->ServerType;
-	strncpy(name,getServerTypeString((ServerType)ptCmd->ServerType),sizeof(name));
+	
+	const ServerEntry *entry = SubNetService::getInstance().getServerEntry(ptCmd->serverID);
+	LogErrorCheckCondition(entry,false,"连接登录认证失败找不到对应的服务器");
+	
+	LogErrorCheckCondition(ptCmd->serverType==entry->serverType && !strcmp(ptCmd->ip,entry->ip),false,"连接登录认证失败服务器信息错误%s,%u",ptCmd->serverType,ptCmd->ip);
+	
+	id = ptCmd->serverID;
+	m_taskType = ptCmd->serverType;
+	strncpy(name,getServerTypeString((ServerType)ptCmd->serverType),sizeof(name));
+	
 	m_verifyState = 1;
 	return true;
 }
-#endif
 
 bool TcpTask::listeningRecv(bool needRecv)
 {

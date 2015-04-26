@@ -1,8 +1,10 @@
 #ifndef BASE_TCP_TASK_H
 #define BASE_TCP_TASK_H
+
 #include "baseSocket.h"
 #include "baseEntry.h"
 #include "baseTime.h"
+
 class TcpTask : public Entry,public MessageQueue<false>
 {
 	public:
@@ -45,9 +47,7 @@ class TcpTask : public Entry,public MessageQueue<false>
 			m_fdsradd = true;
 			return m_fdsradd;
 		}
-	#if 0
-		bool verifyLogin(const Cmd::Server::stLoginStartServerCmd *ptCmd);
-	#endif
+		bool verifyLogin(const Cmd::Server::LoginStartServerCmd *ptCmd);
 		virtual SDWORD verifyConnect();
 		virtual SDWORD waitSync()
 		{

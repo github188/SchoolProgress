@@ -4,6 +4,7 @@ DWORD TcpTaskPool::getSize()
 {
 	return m_okayThreads.taskCount();
 }
+
 bool TcpTaskPool::addVerify(TcpTask *task)
 {
 	VerifyThread *pThread = m_verifyThreads.getOne();
@@ -14,6 +15,7 @@ bool TcpTaskPool::addVerify(TcpTask *task)
 	}
 	return true;
 }
+
 bool TcpTaskPool::addSync(TcpTask *task)
 {
 	SyncThread *pThread = m_syncThreads.getOne();

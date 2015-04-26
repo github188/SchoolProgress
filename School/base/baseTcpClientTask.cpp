@@ -2,6 +2,7 @@
 #include "baseFunc.h"
 #include "common/nullCmd.h"
 #include "baseTcpClient.h"
+#include "baseSubService.h"
 
 TcpClientTaskBase::TcpClientTaskBase(const std::string &ip,const DWORD port,const bool compress,const bool reConnect,const DWORD reConnectTimer) : m_pSocket(NULL),m_compress(compress),m_reConnect(reConnect),m_ip(ip),m_port(port),m_tickTimer(reConnectTimer,false,3600*1000L)
 {
@@ -97,14 +98,13 @@ bool TcpClientTaskBase::sendCmd(const void *cmd,const DWORD cmdLen)
 }
 bool TcpClientTaskBase::sendLoginCmd()
 {
-	return true;
-#if 0
 	using namespace Cmd::Server;
-	stLoginStartServerCmd cmd;
+	LoginStartServerCmd cmd;
 	cmd.serverID = SubNetService::getInstance().getServerID();
 	cmd.serverType = SubNetService::getInstance().getServerType();
+	strncpy(cmd.ip,SubNetService::getInstance().getIP(),sizeof(cmd.ip));
+
 	return sendCmd(&cmd,sizeof(cmd));
-#endif
 }
 bool TcpClientTaskBase::listeningRecv(bool needRecv)
 {

@@ -196,6 +196,8 @@ class SubNetService : public NetService
 		DWORD m_generation;
 	public:
 		bool addServerEntry(const ServerEntry &entry);
+		const ServerEntry* getServerEntry(const DWORD serverID);
+
 		const WORD getServerID() const
 		{
 			return m_serverID;
@@ -203,6 +205,10 @@ class SubNetService : public NetService
 		const DWORD getServerType() const
 		{
 			return m_serverType;
+		}
+		const char* getIP() const
+		{
+			return m_ip;
 		}
 };
 

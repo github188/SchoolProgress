@@ -1,4 +1,5 @@
 #include "baseTcpClient.h"
+#include "baseSubService.h"
 
 TcpClientBase::TcpClientBase(const std::string &name,const std::string &ip,const WORD port,const WORD serverID,const bool compress):Thread(name.c_str()),m_port(port),m_serverID(serverID),m_pSocket(NULL),m_compress(compress)
 {
@@ -9,6 +10,7 @@ TcpClientBase::~TcpClientBase()
 {
 	close();
 }
+
 bool TcpClientBase::connect()
 {
 	SDWORD sock = ::socket(PF_INET,SOCK_STREAM,0);
@@ -60,17 +62,19 @@ bool TcpClientBase::sendCmd(const void *strCmd,const DWORD cmdLen)
 	analysisSendingCmd(nullCmd->byCmd,nullCmd->byParam,cmdLen);
 	return m_pSocket->sendCmd(strCmd,cmdLen);
 }
+
 bool TcpClientBase::sendLoginCmd()
 {
-	return true;
-#if 0
 	using namespace Cmd::Server;
-	stLoginStartServerCmd cmd;
+	LoginStartServerCmd cmd;
 	cmd.serverID = SubNetService::getInstance().getServerID();
 	cmd.serverType = SubNetService::getInstance().getServerType();
+	strncpy(cmd.ip,SubNetService::getInstance().getIP(),sizeof(cmd.ip));
+	
+	Global::logger->debug("tcpclientbase send the msg%s,%u",cmd.ip,cmd.serverID);
 	return sendCmd(&cmd,sizeof(cmd));
-#endif
 }
+
 bool TcpClientBase::reConnect(const char *ip,const WORD port)
 {
 	while(true)
