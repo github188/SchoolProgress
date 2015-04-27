@@ -2,6 +2,7 @@
 #include "base/baseProperty.h"
 #include "sessionTimeTick.h"
 #include "recordClient.h"
+#include "sessionTask.h"
 
 bool SessionServer::s_reloadConfig = false;
 bool SessionServer::s_initOK = false;
@@ -32,15 +33,13 @@ bool SessionServer::init()
 	LogErrorCheckCondition(SubNetService::init(),false,"会话服务器服务器初始化失败");
 
 	const ServerEntry *serverEntry = getServerEntryByType(RECORDSERVER);
-	
-	Global::logger->debug("session here now :");
 	LogErrorCheckCondition(serverEntry,false,"会话服务器初始化找不到档案服务器");
 	
 	recordClient = new RecordClient("档案服务器",serverEntry->ip,serverEntry->port,serverEntry->serverID);
 	LogErrorCheckCondition(recordClient && recordClient->connectToRecordServer() && recordClient->start(),false,"会话服务器初始化档案服务器连接初始化失败");
 	
 	LogErrorCheckCondition(SessionTimeTick::getInstance().start(),false,"会话服务器时间线程启动失败");
-	Global::logger->debug("session here middle :");
+	
 	startUpOK();
 	s_initOK = true;
 	return true;
@@ -51,19 +50,17 @@ void SessionServer::startUpOver()
 	SubNetService::startUpOver();
 }
 
-void SessionServer::newTcpTask( const int sock,const struct sockaddr_in *addr )
+void SessionServer::newTcpTask(const int sock,const struct sockaddr_in *addr)
 {
-#if 0
-	SceneTask *tcpTask = new SceneTask( sock,addr );
-	if( !tcpTask )
+	SessionTask *tcpTask = new SessionTask(sock,addr);
+	if(!tcpTask)
 	{
-		TEMP_FAILURE_RETRY( ::close( sock ) );
+		TEMP_FAILURE_RETRY(::close(sock));
 	}
-	else if( !taskPool->addVerify( tcpTask ) )
+	else if(!m_taskPool->addVerify(tcpTask))
 	{
 		DELETE(tcpTask);
 	}
-#endif
 }
 
 bool SessionServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD cmdLen)

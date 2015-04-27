@@ -1,11 +1,11 @@
-#ifndef SESSION_TASK_H
-#define SESSION_TASK_H
+#ifndef SCENE_TASK_H
+#define SCENE_TASK_H
 
 #include "base/baseTcpTaskQueue.h"
 #include "base/baseLock.h"
 #include "base/baseTime.h"
 
-class SessionTask : public TcpTaskQueue
+class SceneTask : public TcpTaskQueue
 {
 	public:
 		enum Recycle_State
@@ -15,11 +15,11 @@ class SessionTask : public TcpTaskQueue
 			RS_Third,
 		};
 
-		SessionTask(const SDWORD sock,const struct sockaddr_in *addr=NULL);
-		~SessionTask() {};
+		SceneTask(const SDWORD sock,const struct sockaddr_in *addr=NULL);
+		~SceneTask() {};
 		const char* getClassName() const
 		{
-			return "SessionTask";
+			return "SceneTask";
 		}
 		
 		bool checkRecycle();
