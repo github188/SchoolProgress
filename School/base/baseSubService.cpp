@@ -185,20 +185,21 @@ bool SubNetService::broadCmdToUserServer( const void *strCmd,const DWORD cmdLen 
 
 bool SubNetService::addServerEntry(const ServerEntry &entry)
 {
-	bool ret = true;
+	bool findFlg = false;
 	for(std::deque<ServerEntry>::iterator iter = m_serverList.begin();iter != m_serverList.end();++iter)
 	{
-		if( (*iter).serverID == entry.serverID )
+		if((*iter).serverID == entry.serverID)
 		{
-			ret = false;
+			(*iter) = entry;
+			findFlg = true;
 			break;
 		}
 	}
-	if(ret)
+	if(!findFlg)
 	{
 		m_serverList.push_back(entry);
 	}
-	return ret;
+	return true;
 }
 
 const ServerEntry* SubNetService::getServerEntry(const DWORD serverID)

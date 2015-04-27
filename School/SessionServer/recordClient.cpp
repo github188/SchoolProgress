@@ -9,7 +9,6 @@ RecordClient::RecordClient(const std::string &name,const std::string &ip,const W
 
 bool RecordClient::connectToRecordServer()
 {
-	Global::logger->debug("recordClent connect begin");
 	while(!SessionServer::getInstance().isTerminate())
 	{
 		if(TcpClientBase::connect(getIP(),getPort()))
@@ -19,7 +18,6 @@ bool RecordClient::connectToRecordServer()
 		TcpClientBase::close();
 		Thread::sleep(4);
 	}
-	Global::logger->debug("recordClent connect end");
 	return sendLoginCmd();
 }
 

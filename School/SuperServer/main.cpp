@@ -22,6 +22,7 @@ int main()
 	}
 	if(strcmp( "true",Global::config["daemon"] ) == 0 )
 	{
+		Global::logger->info("SuperServer will be run as a daemon");
 		Global::logger->removeConsole();
 		daemon(1, 1);
 	}

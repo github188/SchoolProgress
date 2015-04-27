@@ -71,7 +71,6 @@ bool TcpClientBase::sendLoginCmd()
 	cmd.serverType = SubNetService::getInstance().getServerType();
 	strncpy(cmd.ip,SubNetService::getInstance().getIP(),sizeof(cmd.ip));
 	
-	Global::logger->debug("tcpclientbase send the msg%s,%u",cmd.ip,cmd.serverID);
 	return sendCmd(&cmd,sizeof(cmd));
 }
 
