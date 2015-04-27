@@ -28,12 +28,21 @@ dowork()
 	./SessionServer/SessionServer -d
 	sleep 2
 	
+	echo "starting SceneServer/SceneServer"
+	./SceneServer/SceneServer -d
+	sleep 2
+	
 	ps x|grep "Server -d"
 }
 
 stopwork()
 {
 	sig="-3"
+	
+	pkill $sig SceneServer -u "whoami" 
+	echo "stop SceneServer/SceneServer"
+	
+
 	pkill $sig SessionServer -u "whoami" 
 	echo "stop SessionServer/SessionServer"
 	
@@ -61,6 +70,11 @@ stopwork()
 fstopwork()
 {
 	sig="-9"
+	
+	pkill $sig SceneServer 
+	echo "stop SceneServer/SceneServer"
+
+
 	pkill $sig SessionServer 
 	echo "stop SessionServer/SessionServer"
 

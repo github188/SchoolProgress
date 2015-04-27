@@ -36,10 +36,6 @@ class RecordTask : public TcpTaskQueue
 		bool m_verify;
 		DWORD m_recycleTime;
 		Timer m_sequenceTimer;
-		char m_ip[MAX_IP_LENGTH];
-		WORD m_port;
-		char m_outIP[MAX_IP_LENGTH];
-		WORD m_outPort;
 };
 
 #endif

@@ -13,5 +13,8 @@ chmod +x ./test.py
 #生成tags文件
 ctags -R
 
+#数据库插入语句
+insert into links values('jerichen','gdsz');
+
 #查看端口
 netstat -apn | grep 8000

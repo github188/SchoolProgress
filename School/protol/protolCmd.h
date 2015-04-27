@@ -10,20 +10,20 @@ enum ServerType
 	SUPERSERVER    = 1,       //管理服
 	RECORDSERVER   = 2,       //档案服
 	SESSIONSERVER  = 3,       //会话服务器
-	LOGINSERVER    = 4,       //登录服务器
-	SCENESSERVER   = 5,       //场景服务器
-	GATEWAYSERVER  = 6,       //网关服务器
+	SCENESSERVER   = 4,       //场景服务器
+	GATEWAYSERVER  = 5,       //网关服务器
+	LOGINSERVER    = 6,       //登录服务器
 };
 
 struct ServerTypeStruct
 {
 	ServerTypeStruct( const ServerType _type = UNKNOWNSERVER,const char *_name = NULL )
 	{
-		bzero( this,sizeof( *this ) );
+		bzero(this,sizeof(*this));
 		type = _type;
-		if( _name ) 
+		if(_name) 
 		{
-			strncpy( name,_name,sizeof( name ) );
+			strncpy(name,_name,sizeof(name));
 		}
 	}
 	ServerType type;
@@ -163,12 +163,10 @@ struct ResponseStartServerCmd : public StartServerCmd
 const BYTE NOTIFY_OTHER_SERVERCMD_PARA = 4;
 struct NotifyOtherServer : public StartServerCmd
 {
-	WORD serverID;
 	ServerEntry entry;
 	NotifyOtherServer()
 	{
 		byParam = NOTIFY_OTHER_SERVERCMD_PARA;
-		serverID = 0;
 	}
 };
 

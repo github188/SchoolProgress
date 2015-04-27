@@ -8,12 +8,7 @@
 
 RecordTask::RecordTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTaskQueue(sock,addr),m_sequenceTimer(2*1000L)
 {
-	bzero(m_ip,sizeof(m_ip));
-	m_port = 0;
-	bzero(m_outIP,sizeof(m_outIP));
-	m_outPort = 0;
 	m_recycleTime = 200;
-
 	m_recycleState = RS_First;
 	m_verify = false;
 }
@@ -35,6 +30,7 @@ SDWORD RecordTask::verifyConnect()
 
 	BYTE cmd[Socket::s_maxDataSize];
 	LogErrorCheckCondition(m_mSocket.recvToCmdNoPoll(cmd),0,"档案服务器连接验证接收数据失败");
+	
 	using namespace Cmd::Server;
 	LoginStartServerCmd*ptCmd = (LoginStartServerCmd*)cmd;
 	if(ptCmd->byCmd == START_SERVERCMD && ptCmd->byParam == LOGIN_START_SERVERCMD_PARA)
@@ -42,11 +38,11 @@ SDWORD RecordTask::verifyConnect()
 		if(verifyLogin(ptCmd))
 		{
 			m_verify = true;
-			Global::logger->info("客户端连接通过验证%s,%u",m_ip,m_port);
+			Global::logger->info("档案服务器客户端连接通过验证%u,%u",id,m_taskType);
 			return 1;
 		}
 	}
-	Global::logger->error("客户端连接验证失败"); 
+	Global::logger->error("档案服务器客户端连接验证失败"); 
 	return -1;
 }
 

@@ -18,8 +18,7 @@ bool SessionClient::connectToSessionServer()
 		TcpClientBase::close();
 		Thread::sleep(4);
 	}
-	return true;
-//	return sendLoginCmd();
+	return sendLoginCmd();
 }
 
 void SessionClient::run()

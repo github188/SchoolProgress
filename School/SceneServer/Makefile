@@ -11,10 +11,11 @@ CXX           = g++
 LINK          = g++
 
 ####### Files
-src = sceneTimeTick.cpp\
-      SceneServer.cpp\
+src = SceneServer.cpp\
+	  sceneTimeTick.cpp\
 	  sessionClient.cpp\
-	  recordClient.cpp
+	  recordClient.cpp\
+	  sceneTask.cpp
 
 object = $(patsubst %.cpp,%.o,$(src))
 depend = $(patsubst %.cpp,%.d,$(src))

@@ -1,10 +1,13 @@
 #include "sceneTimeTick.h"
 #include "SceneServer.h"
-#include "time.h"
+#include <time.h>
+#include "recordClient.h"
+#include "sessionClient.h"
+#include "sceneTaskManager.h"
 
 Time SceneTimeTick::s_currentTime;
 
-SceneTimeTick::SceneTimeTick():Thread( "TimeTick" ),m_oneSec( 1 * 1000L ),m_fiveSec( 5 * 1000L ),m_tenSec( 10 * 1000L ),m_oneMin( 60 * 1000L ),m_fiveMin( 5 * 60 * 1000L ),m_oneQuarter( 15 * 60 * 1000L ),m_oneClocker( 1 * 3600,1 * 3600 ),m_zeroClocker( 24 * 3600,24 * 3600 ),m_fourClocker( 4 * 3600,24 * 3600 )
+SceneTimeTick::SceneTimeTick() : Thread("TimeTick"),m_oneSec(1*1000L),m_fiveSec(5*1000L),m_tenSec(10*1000L),m_oneMin(60*1000L),m_fiveMin(5*60*1000L),m_oneQuarter(15*60*1000L),m_oneClocker(1*3600,1*3600),m_zeroClocker(24*3600,24*3600),m_fourClocker(4*3600,24*3600)
 {
 	m_maxFrameTime = 0;
 	m_frameTime = 0;
@@ -23,9 +26,15 @@ void SceneTimeTick::run()
 		setRuning();
 		long begin = 0,end = 0;
 		struct timespec _tv_begin;
-		clock_gettime( CLOCK_REALTIME,&_tv_begin );
-		begin = _tv_begin.tv_sec * 1000L + _tv_begin.tv_nsec / 1000000L;
+		clock_gettime(CLOCK_REALTIME,&_tv_begin);
+		begin = _tv_begin.tv_sec*1000L + _tv_begin.tv_nsec/1000000L;
+		
+		SceneServer::getInstance().doCmd();
+		SceneTaskManager::getInstance().doCmd();
+		recordClient->doCmd();
+		sessionClient->doCmd();
 
+		
 #if 0
 		SceneServer::getInstance().checkAndReloadConfig();
 		SceneServer::getInstance().doCmd();

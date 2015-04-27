@@ -3,6 +3,7 @@
 #include "base/testAutoPtr.h"
 #include "recordClient.h"
 #include "sessionClient.h"
+#include "sceneTask.h"
 
 bool SceneServer::s_reloadConfig = false;
 bool SceneServer::s_initOK = false;
@@ -13,7 +14,7 @@ bool SceneServer::s_openElemEffect = true;
 WORD SceneServer::s_serverSequence = 0;
 WORD SceneServer::s_serverCount = 0;
 
-SceneServer::SceneServer() : SubNetService( "Scene",SCENESSERVER ),m_antiaddiceCheck( false )
+SceneServer::SceneServer() : SubNetService("Scene",SCENESSERVER),m_antiaddiceCheck(false)
 {
 }
 
@@ -25,10 +26,10 @@ bool SceneServer::init()
 {
 	Time time;
 	time.now();
-	switchAnalysis( ( std::string )Global::config["cmdswitch"] == "true");
-	m_antiaddiceCheck = ( std::string )Global::config["antiaddict"] == "true";
+	switchAnalysis((std::string)Global::config["cmdswitch"] == "true");
+	m_antiaddiceCheck = (std::string)Global::config["antiaddict"] == "true";
 
-	m_taskPool = new TcpTaskPool( ( DWORD )Global::config["threadPoolSize"],5000 );
+	m_taskPool = new TcpTaskPool((DWORD)Global::config["threadPoolSize"],5000 );
 
 	LogErrorCheckCondition(m_taskPool && m_taskPool->init(),false,"场景服务器初始化任务池失败");
 	
@@ -72,22 +73,20 @@ void SceneServer::startUpOver()
 #endif
 }
 
-void SceneServer::newTcpTask( const int sock,const struct sockaddr_in *addr )
+void SceneServer::newTcpTask(const int sock,const struct sockaddr_in *addr)
 {
-#if 0
-	SceneTask *tcpTask = new SceneTask( sock,addr );
-	if( !tcpTask )
+	SceneTask *tcpTask = new SceneTask(sock,addr);
+	if(!tcpTask)
 	{
-		TEMP_FAILURE_RETRY( ::close( sock ) );
+		TEMP_FAILURE_RETRY(::close(sock));
 	}
-	else if( !taskPool->addVerify( tcpTask ) )
+	else if(!m_taskPool->addVerify(tcpTask))
 	{
 		DELETE(tcpTask);
 	}
-#endif
 }
 
-bool SceneServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
+bool SceneServer::msgParse_InfoServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
 #if 0
 	if( !SceneAdminToolMgr::getInstance().msgParse( nullCmd,cmdLen ) )
@@ -291,35 +290,30 @@ void SceneServer::checkAndReloadConfig()
 
 int main( int argc,char **argv )
 {
-	TestAutoPtr *ptr = new TestAutoPtr( 1,2 );
-	SafePtr autoPtr = ptr->getWeakPtr();
-	if( !autoPtr.expired() )
-	{
-		TestAutoPtr *hui = (TestAutoPtr*)autoPtr.lock().get();
-		cout<< "testA:" << hui->getA() << "testB:" << hui->getB() << endl;
-	}
-	delete ptr;
-	ptr = NULL;
-	if( !autoPtr.expired() )
-	{
-		TestAutoPtr *hui = (TestAutoPtr*)autoPtr.lock().get();
-		cout<< "testAa:" << hui->getA() << "testBb:" << hui->getB() << endl;
-	}
-
 	struct timespec ts;
-	clock_gettime( CLOCK_REALTIME,&ts );
-	DWORD begin_time = ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
-	Global::logger = new Logger( "SC" );
+	clock_gettime(CLOCK_REALTIME,&ts);
+	DWORD begin_time = ts.tv_sec*1000 + ts.tv_nsec/1000000;
+	
+	Global::logger = new Logger( "SE" );
+	Global::config["cmdswitch"] = "true";
+	Global::config["logfilename"] = "/home/flyer/flyer/SchoolProgress/trunk/School/log/sceneserver.log";
+	Global::config["LoggerLevel"] = "debug";
+	Global::config["daemon"] = "true";
+	Global::config["port"] = 5000;
+	Global::config["serverIP"] = "127.0.0.1";
+	Global::config["ifname"] = "eth0";
+	Global::logger = new Logger("SC");
 	Global::config["cmdswitch"] = "true";
 
-	Global::logger->setLevel( (const char* )Global::config["LoggerLevel"] );
-	if( strlen( Global::config["logfilename"] ) )
+	Global::logger->setLevel((const char*)Global::config["LoggerLevel"]);
+	if(strlen(Global::config["logfilename"]))
 	{
-		Global::logger->setFile( ( const char* )Global::config["logfilename"] );
+		Global::logger->setFile((const char*)Global::config["logfilename"]);
 	}
-	if( strcmp( "true",Global::config["daemon"] ) )
+	
+	if(!strcmp("true",Global::config["daemon"]))
 	{
-		Global::logger->info( "Program will be run as a daemon" );
+		Global::logger->info("Program will be run as a daemon");
 		Global::logger->removeConsole();
 		daemon( 1,1 );
 	}
@@ -329,7 +323,7 @@ int main( int argc,char **argv )
 	return EXIT_SUCCESS;
 }
 
-void SceneServer::switchAnalysis( bool switchFlg )
+void SceneServer::switchAnalysis(bool switchFlg)
 {
 #if 0
 	SessionClient::switchCmdAnalysis( switchFlg );
