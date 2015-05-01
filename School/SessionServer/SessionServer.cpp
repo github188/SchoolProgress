@@ -7,13 +7,9 @@
 bool SessionServer::s_reloadConfig = false;
 bool SessionServer::s_initOK = false;
 bool SessionServer::s_waitFinal = false;
-bool SessionServer::s_checkMove = true;
-bool SessionServer::s_openElemEffect = true;
 
-WORD SessionServer::s_serverSequence = 0;
-WORD SessionServer::s_serverCount = 0;
 
-SessionServer::SessionServer() : SubNetService("SessionServer",SESSIONSERVER),m_antiaddiceCheck(false)
+SessionServer::SessionServer() : SubNetService("SessionServer",SESSIONSERVER)
 {
 }
 
@@ -23,10 +19,6 @@ SessionServer::~SessionServer()
 
 bool SessionServer::init()
 {
-	Time time;
-	time.now();
-	switchAnalysis( (std::string)Global::config["cmdswitch"] == "true");
-
 	m_taskPool = new TcpTaskPool((DWORD)Global::config["threadPoolSize"],5000 );
 	LogErrorCheckCondition(m_taskPool && m_taskPool->init(),false,"会话服务器初始化任务池失败");
 	
@@ -39,6 +31,8 @@ bool SessionServer::init()
 	LogErrorCheckCondition(recordClient && recordClient->connectToRecordServer() && recordClient->start(),false,"会话服务器初始化档案服务器连接初始化失败");
 	
 	LogErrorCheckCondition(SessionTimeTick::getInstance().start(),false,"会话服务器时间线程启动失败");
+	
+	switchAnalysis((std::string)Global::config["cmdswitch"] == "true");
 	
 	startUpOK();
 	s_initOK = true;
@@ -63,7 +57,7 @@ void SessionServer::newTcpTask(const int sock,const struct sockaddr_in *addr)
 	}
 }
 
-bool SessionServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
+bool SessionServer::msgParse_InfoServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
 #if 0
 	if( !SceneAdminToolMgr::getInstance().msgParse( nullCmd,cmdLen ) )
@@ -74,7 +68,7 @@ bool SessionServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD
 	return true;
 }
 
-bool SessionServer::msgParse_SuperService( const Cmd::NullCmd *nullCmd,const DWORD cmdLen )
+bool SessionServer::msgParse_SuperService(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
 #if 0
 	using namespace Cmd::Server;
@@ -116,56 +110,36 @@ void SessionServer::finalSave()
 	SceneNpcManager::getInstance().saveAllNpc();
 #endif
 }
-#if 0
-void ScenesServer::checkFinal()
+
+void SessionServer::checkFinal()
 {
-	if( !s_waitFinal )
-	{
-		return;
-	}
+	CheckConditonVoid(s_waitFinal);
 	finalSave();
 	s_waitFinal = true;
 }
-#endif
+
 void SessionServer::final()
 {
 	s_waitFinal = true;
-	while( s_initOK && s_waitFinal && !SessionTimeTick::getInstance().isFinal() )
+	while(s_initOK && s_waitFinal && !SessionTimeTick::getInstance().isFinal())
 	{
-		Thread::msleep( 10 );
+		Thread::msleep(10);
 	}
-#if 0
-	SceneTimeTick::getInstance().final();
-	SceneTimeTick::getInstance().join();
-	SceneTimeTick::delInstance();
-#endif
+	SessionTimeTick::getInstance().final();
+	SessionTimeTick::getInstance().join();
+	SessionTimeTick::deleteInstance();
 
-#if 0
-	MonitorThread::getInstance().final();
-	MonitorThread::getInstance().join();
-	MonitorThread::delInstance();
-#endif
-	if( m_taskPool )
+	if(m_taskPool)
 	{
 		m_taskPool->final();
-		DELETE( m_taskPool );
+		DELETE(m_taskPool);
 	}
-#if 0
-	if( sessionClient )
-	{
-		sessionClient->final();
-		sessionClient->join();
-		DELETE( sessionClient );
-	}
-#endif
-#if 0
-	if( recordClinet )
+	if(recordClient)
 	{
 		recordClient->final();
 		recordClient->join();
-		DELETE( recordClient );
+		DELETE(recordClient);
 	}
-#endif
 
 	SubNetService::final();
 }
@@ -178,12 +152,9 @@ void SessionServer::reloadConfig()
 
 void SessionServer::checkAndReloadConfig()
 {
-	if( !s_reloadConfig )
-	{
-		return;
-	}
+	CheckConditonVoid(s_reloadConfig);
 	s_reloadConfig = false;
-	switchAnalysis( (std::string)Global::config["cmdswitch"] == "true" );
+	switchAnalysis((std::string)Global::config["cmdswitch"] == "true");
 }
 
 int main( int argc,char **argv )
@@ -218,13 +189,10 @@ int main( int argc,char **argv )
 	return EXIT_SUCCESS;
 }
 
-void SessionServer::switchAnalysis( bool switchFlg )
+void SessionServer::switchAnalysis(const bool switchFlg)
 {
-#if 0
-	SessionClient::switchCmdAnalysis( switchFlg );
-	RecordClient::switchCmdAnalysis( switchFlg );
-	SceneTask::switchCmdAnalysis( switchFlg );
-#endif
+	recordClient->switchCmdAnalysis(switchFlg);
+	SessionTask::switchCmdAnalysis(switchFlg);
 }
 
 

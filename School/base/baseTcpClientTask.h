@@ -189,8 +189,8 @@ class TcpClientTaskBase : public Entry
 		Timer m_tickTimer;
 		bool m_tick;
 	private:
-		virtual void analysisSendingCmd(BYTE cmd,BYTE param,DWORD size) {};
-		virtual void analysisRecvingCmd(BYTE cmd,BYTE param,DWORD size) {};
+		virtual void analysisSendingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen) {};
+		virtual void analysisRecvingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen) {};
 
 };
 

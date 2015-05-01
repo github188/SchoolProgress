@@ -42,7 +42,6 @@ class SingletonBase<T,true> : private Noncopyable
 			{
 				instance = new T();
 			}
-		//	assert( instance );
 			return *instance;
 		}
 		static void newInstance()

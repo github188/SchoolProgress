@@ -15,18 +15,6 @@ class SessionTimeTick : public Thread,public SingletonBase<SessionTimeTick>
 		void run();
 		static void zeroHour();
 		static void fourHour();
-		static DWORD getDayStart( DWORD time )
-		{
-			return time / 86400 * 86400;
-		}
-		long getMaxFrameTime()
-		{
-			return m_maxFrameTime;
-		}
-		long getLastFrameTime()
-		{
-			return m_frameTime;
-		}
 		bool isHighDelay();
 	private:
 		void oneSec();
@@ -54,11 +42,6 @@ class SessionTimeTick : public Thread,public SingletonBase<SessionTimeTick>
 		QWORD m_maxFrameTime;
 		QWORD m_frameTime;
 };
-
-inline bool SessionTimeTick::isHighDelay()
-{
-	return m_maxFrameTime > 200;
-}
 
 #endif
 

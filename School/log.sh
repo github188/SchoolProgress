@@ -34,7 +34,7 @@ main()
 	##异常日志
 	EXCEPTIONLOG=`grep exception.log $CONFIG | sed -e 's/<[a-zA-Z]*>//' | sed -e 's/<\/[a-zA-Z]*>//'`
 	##所有日志
-	ALL=$SUPERLOG" "$RECORDLOG" "$SESSIONLOG" "$SCENELOG" "
+	ALL=$SUPERLOG" "$RECORDLOG" "$SESSIONLOG" "$SCENELOG" "$GATEWAYLOG" "
 	clear
 	case $PARA in
 		su)
@@ -52,9 +52,9 @@ main()
 #		np)
 #		tail --follow=name --retry $NPCLOG --max-unchanged-stats=3 -n 40 -q
 #		;;
-#		ga)
-#		tail --follow=name --retry $GATEWAYLOG --max-unchanged-stats=3 -n 40 -q
-#		;;
+		ga)
+		tail --follow=name --retry $GATEWAYLOG --max-unchanged-stats=3 -n 40 -q
+		;;
 #		na)
 #		tail --follow=name --retry $NAMELOG --max-unchanged-stats=3 -n 40 -q
 #		;;

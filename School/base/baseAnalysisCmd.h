@@ -15,7 +15,7 @@ class AnalysisCmd
 		char m_name[MAX_NAMESIZE];
 		bool m_switchOn;
 	public:
-		AnalysisCmd(const char *name,const bool switchOn = true) : m_switchOn(switchOn)
+		AnalysisCmd(const char *name,const bool switchOn = false) : m_switchOn(switchOn)
 		{
 			bzero(m_name,sizeof(m_name));
 			if(name)
@@ -27,6 +27,11 @@ class AnalysisCmd
 		void setSwitch(const bool switchFlg)
 		{
 			m_switchOn = switchFlg;
+		}
+		
+		bool getSwitch()
+		{
+			return m_switchOn;
 		}
 
 		void addCmd(const BYTE byCmd,const BYTE byParam,const DWORD cmdLen)

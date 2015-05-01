@@ -64,8 +64,8 @@ class TcpClientBase : public Thread
 		const bool m_compress;
 		bool m_reconnect;
 	protected:
-		virtual void analysisSendingCmd(BYTE cmd,BYTE param,DWORD size) {};
-		virtual void analysisRecvingCmd(BYTE cmd,BYTE param,DWORD size) {};
+		virtual void analysisSendingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen) {};
+		virtual void analysisRecvingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen) {};
 };
 
 #endif
