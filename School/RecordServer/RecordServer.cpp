@@ -6,13 +6,9 @@
 bool RecordServer::s_reloadConfig = false;
 bool RecordServer::s_initOK = false;
 bool RecordServer::s_waitFinal = false;
-bool RecordServer::s_checkMove = true;
-bool RecordServer::s_openElemEffect = true;
 
-WORD RecordServer::s_serverSequence = 0;
-WORD RecordServer::s_serverCount = 0;
 
-RecordServer::RecordServer() : SubNetService("RecordServer",RECORDSERVER),m_antiaddiceCheck(false)
+RecordServer::RecordServer() : SubNetService("RecordServer",RECORDSERVER)
 {
 }
 
@@ -22,11 +18,9 @@ RecordServer::~RecordServer()
 
 bool RecordServer::init()
 {
-	Time time;
-	time.now();
-	switchAnalysis( (std::string)Global::config["cmdswitch"] == "true");
+	switchAnalysis((std::string)Global::config["cmdswitch"] == "true");
 
-	m_taskPool = new TcpTaskPool((DWORD)Global::config["threadPoolSize"],5000 );
+	m_taskPool = new TcpTaskPool((DWORD)Global::config["threadPoolSize"],5000);
 	LogErrorCheckCondition(m_taskPool && m_taskPool->init(),false,"档案服务器初始化任务池失败");
 	
 	LogErrorCheckCondition(SubNetService::init(),false,"档案服务器服务器初始化失败");
@@ -43,12 +37,12 @@ void RecordServer::startUpOver()
 	SubNetService::startUpOver();
 }
 
-void RecordServer::newTcpTask( const int sock,const struct sockaddr_in *addr )
+void RecordServer::newTcpTask(const int sock,const struct sockaddr_in *addr)
 {
 	RecordTask *tcpTask = new RecordTask(sock,addr);
 	if(!tcpTask)
 	{
-		TEMP_FAILURE_RETRY( ::close( sock ) );
+		TEMP_FAILURE_RETRY(::close(sock));
 	}
 	else if(!m_taskPool->addVerify(tcpTask))
 	{
@@ -56,7 +50,7 @@ void RecordServer::newTcpTask( const int sock,const struct sockaddr_in *addr )
 	}
 }
 
-bool RecordServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
+bool RecordServer::msgParse_InfoServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
 #if 0
 	if( !SceneAdminToolMgr::getInstance().msgParse( nullCmd,cmdLen ) )
@@ -67,7 +61,7 @@ bool RecordServer::msgParse_InfoServer( const Cmd::NullCmd *nullCmd,const DWORD 
 	return true;
 }
 
-bool RecordServer::msgParse_SuperService( const Cmd::NullCmd *nullCmd,const DWORD cmdLen )
+bool RecordServer::msgParse_SuperService(const Cmd::NullCmd *nullCmd,const DWORD cmdLen)
 {
 #if 0
 	using namespace Cmd::Server;
@@ -109,57 +103,31 @@ void RecordServer::finalSave()
 	SceneNpcManager::getInstance().saveAllNpc();
 #endif
 }
-#if 0
-void ScenesServer::checkFinal()
+
+void RecordServer::checkFinal()
 {
-	if( !s_waitFinal )
-	{
-		return;
-	}
+	CheckConditonVoid(s_waitFinal);
 	finalSave();
 	s_waitFinal = true;
 }
-#endif
+
 void RecordServer::final()
 {
 	s_waitFinal = true;
-	while( s_initOK && s_waitFinal && !RecordTimeTick::getInstance().isFinal() )
+	while(s_initOK && s_waitFinal && !RecordTimeTick::getInstance().isFinal())
 	{
-		Thread::msleep( 10 );
+		Thread::msleep(10);
 	}
-#if 0
-	SceneTimeTick::getInstance().final();
-	SceneTimeTick::getInstance().join();
-	SceneTimeTick::delInstance();
-#endif
+	RecordTimeTick::getInstance().final();
+	RecordTimeTick::getInstance().join();
+	RecordTimeTick::deleteInstance();
 
-#if 0
-	MonitorThread::getInstance().final();
-	MonitorThread::getInstance().join();
-	MonitorThread::delInstance();
-#endif
-	if( m_taskPool )
+	if(m_taskPool)
 	{
 		m_taskPool->final();
-		DELETE( m_taskPool );
+		DELETE(m_taskPool);
 	}
-#if 0
-	if( sessionClient )
-	{
-		sessionClient->final();
-		sessionClient->join();
-		DELETE( sessionClient );
-	}
-#endif
-#if 0
-	if( recordClinet )
-	{
-		recordClient->final();
-		recordClient->join();
-		DELETE( recordClient );
-	}
-#endif
-
+	
 	SubNetService::final();
 }
 
@@ -171,10 +139,8 @@ void RecordServer::reloadConfig()
 
 void RecordServer::checkAndReloadConfig()
 {
-	if( !s_reloadConfig )
-	{
-		return;
-	}
+	LogCheckConditionOnly(s_reloadConfig,"档案服务器加载配置文件失败");
+	
 	s_reloadConfig = false;
 	switchAnalysis( (std::string)Global::config["cmdswitch"] == "true" );
 }
@@ -205,20 +171,18 @@ int main( int argc,char **argv )
 		Global::logger->removeConsole();
 		daemon(1,1);
 	}
+
 	RecordServer::newInstance<RecordServer>();
 	RecordServer::getInstance().loop();
 
 	return EXIT_SUCCESS;
 }
 
-void RecordServer::switchAnalysis( bool switchFlg )
+void RecordServer::switchAnalysis(const bool switchFlg)
 {
-#if 0
-	SessionClient::switchCmdAnalysis( switchFlg );
-	RecordClient::switchCmdAnalysis( switchFlg );
-	SceneTask::switchCmdAnalysis( switchFlg );
-#endif
+	RecordTask::switchCmdAnalysis(switchFlg);
 }
+
 
 
 		

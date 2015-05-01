@@ -5,7 +5,7 @@
 
 Time RecordTimeTick::s_currentTime;
 
-RecordTimeTick::RecordTimeTick():Thread( "RecordTimeTick" ),m_oneSec( 1*1000L ),m_fiveSec( 5*1000L ),m_tenSec( 10*1000L ),m_oneMin( 60*1000L ),m_fiveMin( 5*60*1000L ),m_oneQuarter( 15*60*1000L ),m_oneClocker( 1*3600,1*3600 ),m_zeroClocker( 24*3600,24*3600 ),m_fourClocker( 4*3600,24*3600 )
+RecordTimeTick::RecordTimeTick() : Thread("RecordTimeTick"),m_oneSec(1*1000L),m_fiveSec(5*1000L),m_tenSec(10*1000L),m_oneMin(60*1000L),m_fiveMin(5*60*1000L),m_oneQuarter(15*60*1000L),m_oneClocker(1*3600,1*3600),m_zeroClocker(24*3600,24*3600),m_fourClocker(4*3600,24*3600)
 {
 	m_maxFrameTime = 0;
 	m_frameTime = 0;
@@ -30,38 +30,38 @@ void RecordTimeTick::run()
 		RecordServer::getInstance().doCmd();
 		RecordTaskManager::getInstance().doCmd();
 
-		if( m_oneSec(RecordTimeTick::s_currentTime) )
+		if(m_oneSec(s_currentTime))
 		{
 			oneSec();
-			if( m_fiveSec(RecordTimeTick::s_currentTime) )
+			if(m_fiveSec(s_currentTime))
 			{
 				fiveSec();
 			}
-			else if( m_tenSec(RecordTimeTick::s_currentTime) )
+			else if(m_tenSec(s_currentTime))
 			{
 				tenSec();
 			}
-			else if( m_oneMin(RecordTimeTick::s_currentTime) )
+			else if(m_oneMin(s_currentTime))
 			{
 				oneMin();
 			}
-			else if( m_fiveMin(RecordTimeTick::s_currentTime) )
+			else if(m_fiveMin(s_currentTime))
 			{
 				fiveMin();
 			}
-			else if( m_oneQuarter(RecordTimeTick::s_currentTime) )
+			else if(m_oneQuarter(s_currentTime))
 			{
 				oneQuarter();
 			}
-			else if( m_oneClocker(RecordTimeTick::s_currentTime) )
+			else if(m_oneClocker(s_currentTime))
 			{
 				oneHour();
 			}
-			else if( m_zeroClocker(RecordTimeTick::s_currentTime) )
+			else if(m_zeroClocker(s_currentTime))
 			{
 				zeroHour();
 			}
-			else if( m_fourClocker(RecordTimeTick::s_currentTime) )
+			else if(m_fourClocker(s_currentTime))
 			{
 				fourHour();
 			}
@@ -74,7 +74,7 @@ void RecordTimeTick::run()
 		if( maxFrameNum )
 		{
 			maxFrameNum -= 1;
-			if( m_frameTime > m_maxFrameTime )
+			if(m_frameTime > m_maxFrameTime)
 			{
 				m_maxFrameTime = m_frameTime;
 			}
@@ -84,10 +84,10 @@ void RecordTimeTick::run()
 			maxFrameNum = 100;
 			m_maxFrameTime = 0;
 		}
-		LogInfoCheckConditionOnly( m_frameTime<= 300,"档案服务器运行桢数过慢%lums",m_frameTime );
-		if( m_frameTime < 10 )
+		LogInfoCheckConditionOnly(m_frameTime <= 300,"档案服务器运行桢数过慢%lums",m_frameTime);
+		if(m_frameTime < 10)
 		{
-			Thread::msleep( 10 - m_frameTime );
+			Thread::msleep(10 - m_frameTime);
 		}
 	}
 	recordFinal();
@@ -133,6 +133,10 @@ void RecordTimeTick::recordFinal()
 {
 }
 
+bool RecordTimeTick::isHighDelay()
+{
+	return m_maxFrameTime > 200;
+}
 
 
 

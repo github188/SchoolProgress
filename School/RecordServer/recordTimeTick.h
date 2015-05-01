@@ -15,18 +15,6 @@ class RecordTimeTick : public Thread,public SingletonBase<RecordTimeTick>
 		void run();
 		static void zeroHour();
 		static void fourHour();
-		static DWORD getDayStart( DWORD time )
-		{
-			return time / 86400 * 86400;
-		}
-		long getMaxFrameTime()
-		{
-			return m_maxFrameTime;
-		}
-		long getLastFrameTime()
-		{
-			return m_frameTime;
-		}
 		bool isHighDelay();
 	private:
 		void oneSec();
@@ -38,7 +26,7 @@ class RecordTimeTick : public Thread,public SingletonBase<RecordTimeTick>
 		void oneHour();
 		void zeroClocker();
 		void recordFinal();
-
+	private:
 		Timer m_oneSec;
 		Timer m_fiveSec;
 		Timer m_tenSec;
@@ -54,11 +42,6 @@ class RecordTimeTick : public Thread,public SingletonBase<RecordTimeTick>
 		QWORD m_maxFrameTime;
 		QWORD m_frameTime;
 };
-
-inline bool RecordTimeTick::isHighDelay()
-{
-	return m_maxFrameTime > 200;
-}
 
 #endif
 
