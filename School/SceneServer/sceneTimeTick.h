@@ -15,18 +15,6 @@ class SceneTimeTick : public Thread,public SingletonBase<SceneTimeTick>
 		void run();
 		static void zeroHour();
 		static void fourHour();
-		static DWORD getDayStart( DWORD time )
-		{
-			return time / 86400 * 86400;
-		}
-		long getMaxFrameTime()
-		{
-			return m_maxFrameTime;
-		}
-		long getLastFrameTime()
-		{
-			return m_frameTime;
-		}
 		bool isHighDelay();
 	private:
 		void oneSec();
@@ -51,14 +39,9 @@ class SceneTimeTick : public Thread,public SingletonBase<SceneTimeTick>
 		Clocker  m_zeroClocker;
 		Clocker  m_fourClocker;
 
-		long m_maxFrameTime;
-		long m_frameTime;
+		QWORD m_maxFrameTime;
+		QWORD  m_frameTime;
 };
-
-inline bool SceneTimeTick::isHighDelay()
-{
-	return m_maxFrameTime > 200;
-}
 
 #endif
 

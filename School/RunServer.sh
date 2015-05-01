@@ -32,6 +32,11 @@ dowork()
 	./SceneServer/SceneServer -d
 	sleep 2
 	
+	echo "starting GatewayServer/GatewayServer"
+	./GatewayServer/GatewayServer -d
+	sleep 2
+	
+
 	ps x|grep "Server -d"
 }
 
@@ -39,10 +44,12 @@ stopwork()
 {
 	sig="-3"
 	
+	pkill $sig GatewayServer -u "whoami" 
+	echo "stop GatewayServer/GatewayServer"
+	
 	pkill $sig SceneServer -u "whoami" 
 	echo "stop SceneServer/SceneServer"
 	
-
 	pkill $sig SessionServer -u "whoami" 
 	echo "stop SessionServer/SessionServer"
 	
@@ -71,6 +78,10 @@ fstopwork()
 {
 	sig="-9"
 	
+	pkill $sig GatewayServer 
+	echo "stop GatewayServer/GatewayServer"
+
+
 	pkill $sig SceneServer 
 	echo "stop SceneServer/SceneServer"
 

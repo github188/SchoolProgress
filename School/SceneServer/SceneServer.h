@@ -10,17 +10,39 @@ class SceneServer : public SubNetService
 		friend class SingletonBase<Service,false>;
 		SceneServer();
 		~SceneServer();
+
+		/// @brief 停机保存数据
+		void finalSave();
+
+		/// @brief 命令统计开关
+		void switchAnalysis(const bool switchFlg);
 	public:
 		static SceneServer &getInstance()
 		{
 			return Service::getInstance<SceneServer>();
 		}
+		
+		/// @brieif 设置重新加载配置标记
 		void reloadConfig();
+		
 		bool init();
+
+		/// @brief 检测服务器是否停机
+		void checkFinal();
+
+		/// @brief 服务器进程结束
 		void final();
+
+		/// @brief 服务器启动
 		void startUpOver();
-		void finalSave();
+		
+		/// @brief 重新加载配置
+		void checkAndReloadConfig();
+		
+		/// @brief 接收一个新连接
 		void newTcpTask(const int sock,const struct sockaddr_in *addr);
+
+		/// @brief 下面是处理各种服务器的消息
 		bool msgParse_SuperService(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
 		bool msgParse_ZoneService(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
 		bool msgParse_FLServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
@@ -29,25 +51,13 @@ class SceneServer : public SubNetService
 		bool msgParse_GMServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
 		bool msgParse_UserServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
 		bool msgParse_InfoServer(const Cmd::NullCmd *nullCmd,const DWORD cmdLen);
-	public:
-		static WORD s_serverSequence;
-		static WORD s_serverCount;
 	private:
+		/// 重新加载配置标记
 		static bool s_reloadConfig;
-	public:
-		void checkAndReloadConfig();
-		static void globalInit();
-		static DWORD s_online;
+		/// 等待停机结束
 		static bool s_waitFinal;
+		/// 服务器初始化标志
 		static bool s_initOK;
-		static bool s_checkMove;
-		static bool s_openElemEffect;
-		bool m_antiaddiceCheck;
-	private:
-		void switchAnalysis(const bool switchFlg);
-		bool initConfig();
-	public:
-		typedef SceneTimeTick TimeTick;
 };
 
 #endif
