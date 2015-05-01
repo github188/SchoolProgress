@@ -13,7 +13,7 @@ class SuperTaskManager : public TaskQueueManager<SuperTask>,public SingletonBase
 		SuperTaskManager() {}
 		~SuperTaskManager() {}
 	public:
-		const DWORD caculateOnlineNum();
+		/// @brief 判断服务器类型是否有依赖关系
 		const bool checkDependence(const WORD serverType);
 };
 

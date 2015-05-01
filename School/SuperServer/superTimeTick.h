@@ -15,20 +15,8 @@ class SuperTimeTick : public Thread,public SingletonBase<SuperTimeTick>
 		void run();
 		static void zeroHour();
 		static void fourHour();
-		static DWORD getDayStart( DWORD time )
-		{
-			return time / 86400 * 86400;
-		}
-		long getMaxFrameTime()
-		{
-			return m_maxFrameTime;
-		}
-		long getLastFrameTime()
-		{
-			return m_frameTime;
-		}
-		bool isHighDelay();
 	private:
+		bool isHighDelay();
 		void oneSec();
 		void fiveSec();
 		void tenSec();
@@ -38,7 +26,7 @@ class SuperTimeTick : public Thread,public SingletonBase<SuperTimeTick>
 		void oneHour();
 		void zeroClocker();
 		void superFinal();
-
+	private:
 		Timer m_oneSec;
 		Timer m_fiveSec;
 		Timer m_tenSec;
@@ -54,11 +42,6 @@ class SuperTimeTick : public Thread,public SingletonBase<SuperTimeTick>
 		QWORD m_maxFrameTime;
 		QWORD m_frameTime;
 };
-
-inline bool SuperTimeTick::isHighDelay()
-{
-	return m_maxFrameTime > 200;
-}
 
 #endif
 

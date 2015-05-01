@@ -2,7 +2,6 @@
 #define SUPER_SERVER_H
 
 #include <stdio.h>
-
 #include "base/baseNetService.h"
 #include "base/baseSubService.h"
 #include "base/baseTcpClientTaskPool.h"
@@ -17,68 +16,69 @@ class SuperServer : public NetService
 		friend class SingletonBase<Service,false>;
 		SuperServer();
 		~SuperServer();
+		bool init();
+
+		/// @brief 设置服务器基本数据
+		bool getServerInfo();
+		
+		/// @brief 接收新的请求
+		void newTcpTask(const SDWORD sock,const struct sockaddr_in *addr );
+		
+		/// @brief 命令统计开关
+		void switchAnalysis(const bool switchFlg);
+		
+		/// @brief 服务器停机时执行的操作
+		void final();
+
 	public:
 		static SuperServer &getInstance()
 		{
 			return Service::getInstance<SuperServer>();
 		}
-		void reloadConfig();
-		const GameZone& getZoneID() const
-		{
-			return m_gameZone;
-		}
-		void setZoneID( const GameZone &gameZone );
-		const std::string& getZoneName()
-		{
-			return m_zoneName;
-		}
-		void setZoneName( const char *zoneName )
-		{
-			m_zoneName = zoneName;
-		}
+		
 		const WORD getID() const
 		{
 			return m_serverID;
 		}
+		
 		const WORD getType() const
 		{
 			return m_serverType;
 		}
+		
 		const char* getIP() const
 		{
 			return m_ip;
 		}
+		
 		const WORD getPort() const
 		{
 			return m_port;
 		}
+		
 		TcpClientTaskPool* getClientPool()
 		{
 			return m_clientPool;
 		}
-		static MysqlPool *s_mySqlPool;
-		char m_zoneInfoBuff[Socket::s_maxDataSize];
-		char m_gameZoneStr[16];
-		DWORD m_serialNum;
-		GameZone m_duduGameZone;
-		std::map<DWORD,std::string> m_accountInfo;
-	private:
-		TcpClientTaskPool *m_clientPool;
-		GameZone m_gameZone;
-		std::string m_zoneName;
-		WORD m_serverID;
-		WORD m_serverType;
-		char m_ip[MAX_IP_LENGTH];
-		WORD m_port;
-		char m_outIP[MAX_IP_LENGTH];
-		WORD m_outPort;
-	private:
-		bool init();
-		void newTcpTask(const SDWORD sock,const struct sockaddr_in *addr );
-		void final();
-		bool getServerInfo();
+
 	public:
-		bool sendUserCmdToMonitor( const void *strCmd,const DWORD cmdLen );
+		///数据库连接池
+		static MysqlPool *s_mySqlPool;
+	private:
+		///客户端连接池
+		TcpClientTaskPool *m_clientPool;
+		/// 服务器编号
+		WORD m_serverID;
+		/// 服务器类型
+		WORD m_serverType;
+		/// 服务器ip
+		char m_ip[MAX_IP_LENGTH];
+		/// 服务器端口
+		WORD m_port;
+		/// 服务器对外开放ip(只有网关用得着)
+		char m_outIP[MAX_IP_LENGTH];
+		/// 服务器对外监听端口(只有网关用得着)
+		WORD m_outPort;
 };
 
 #endif

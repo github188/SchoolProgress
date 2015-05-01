@@ -5,29 +5,6 @@
 #include "base/baseFunc.h"
 #include "base/baseSqlRecord.h"
 
-const DWORD SuperTaskManager::caculateOnlineNum()
-{
-	struct OnlineNumExec : public EntryCallBack<SuperTask>
-	{
-		DWORD num;
-		OnlineNumExec() : num(0) {};
-		bool exec(SuperTask *task)
-		{
-		#if 0
-			if(task->getType() == GATEWAYSERVER)
-			{
-				num += task->getOnlineNum();
-			}
-		#endif
-			return true;
-		}
-	};
-
-	OnlineNumExec exec;
-	execEveryTask(exec);
-	return exec.num;
-}
-
 const bool SuperTaskManager::checkDependence(const WORD serverType)
 {
 	MysqlHandle *handle = SuperServer::s_mySqlPool->getHandle();

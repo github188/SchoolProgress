@@ -5,10 +5,13 @@
 #include "superTimeTick.h"
 #include "SuperServer.h"
 
-RWLock SuperTask::s_lock;
+bool SuperTask::s_analysisCmdFlg = false;
 
-SuperTask::SuperTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTaskQueue(sock,addr),m_sequenceTimer(2*1000L)
+SuperTask::SuperTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTaskQueue(sock,addr),m_syncTimer(2*1000L),m_analysisSend("SuperTask指令发送统计"),m_analysisRecv("SuperTask指令接收统计")
 {
+	m_protocol = 0;
+	m_buildTime = 0;
+	m_svnVersion = 0;
 	bzero(m_ip,sizeof(m_ip));
 	m_port = 0;
 	bzero(m_outIP,sizeof(m_outIP));
@@ -23,9 +26,10 @@ SuperTask::SuperTask(const SDWORD sock,const struct sockaddr_in *addr) : TcpTask
 	m_recycleState = RS_First;
 	m_verify = false;
 }
+
 bool SuperTask::checkRecycle()
 {
-	CheckConditonReturn( m_recycleState!=RS_First,false );
+	CheckConditonReturn(m_recycleState != RS_First,false);
 	if(m_recycleState == RS_Second)
 	{
 		m_recycleState = RS_Third;
@@ -35,7 +39,6 @@ bool SuperTask::checkRecycle()
 
 bool SuperTask::verify(const DWORD serverType,const char *ip)
 {
-	RWLock_scope_wrlock tempLock(s_lock);
 	MysqlHandle *handle = SuperServer::s_mySqlPool->getHandle();
 	LogErrorCheckCondition(handle,false,"数据库句柄为空");
 	
@@ -138,8 +141,7 @@ SDWORD SuperTask::waitSync()
 		}
 		return 0;
 	}
-	RWLock_scope_wrlock tempLock(s_lock);
-	if(!m_hasNotifyOther && m_sequenceTimer(SuperTimeTick::s_currentTime) && SuperTaskManager::getInstance().checkDependence(getType()))
+	if(!m_hasNotifyOther && m_syncTimer(SuperTimeTick::s_currentTime) && SuperTaskManager::getInstance().checkDependence(getType()))
 	{
 		if(notifyOther())
 		{
@@ -176,6 +178,7 @@ SDWORD SuperTask::recycleConnect()
 	}
 	return ret;
 }
+
 bool SuperTask::uniqueAdd()
 {
 	return SuperTaskManager::getInstance().addTask(this);
@@ -188,7 +191,6 @@ bool SuperTask::uniqueRemove()
 
 bool SuperTask::msgParseStart(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
-	Global::logger->debug("SuperTask::msgParseStart %u,%u",cmd->byCmd,cmd->byParam);
 	using namespace Cmd::Server;
 	switch(cmd->byParam)
 	{
@@ -199,7 +201,6 @@ bool SuperTask::msgParseStart(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 				if(task)
 				{
 					task->notifyReturn();
-					return true;
 				}
 				return true;
 			}
@@ -221,10 +222,12 @@ bool SuperTask::msgParseForward(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
 	return false;
 }
+
 bool SuperTask::msgParse(const Cmd::NullCmd *cmd,const DWORD cmdLen)
 {
 	return true;
 }
+
 bool SuperTask::notifyOther()
 {
 	using namespace Cmd::Server;
@@ -325,4 +328,30 @@ bool SuperTask::notifyMe()
 	SuperTaskManager::getInstance().execEveryTask(exec);
 	return sendCmd(ptCmd,ptCmd->allSize());
 }
+
+void SuperTask::analysisSendingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen)
+{
+	CheckConditonVoid(s_analysisCmdFlg);
+	if(s_analysisCmdFlg != m_analysisSend.getSwitch())
+	{
+		m_analysisSend.setSwitch(s_analysisCmdFlg);
+	}
+	m_analysisSend.addCmd(cmd,param,cmdLen);
+}
+
+void SuperTask::analysisRecvingCmd(const BYTE cmd,const BYTE param,const DWORD cmdLen)
+{
+	CheckConditonVoid(s_analysisCmdFlg);
+	if(s_analysisCmdFlg != m_analysisRecv.getSwitch())
+	{
+		m_analysisRecv.setSwitch(s_analysisCmdFlg);
+	}
+	m_analysisRecv.addCmd(cmd,param,cmdLen);
+}
+
+void SuperTask::switchCmdAnalysis(const bool switchOn)
+{
+	s_analysisCmdFlg = switchOn;
+}
+
 
