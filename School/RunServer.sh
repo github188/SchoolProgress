@@ -14,6 +14,11 @@ dowork()
 	./database.py startsql
 	echo "StartSQL"
 	cd ..
+	
+	echo "starting PlateServer/PlateServer"
+	./PlateServer/PlateServer -d
+	sleep 2
+
 
 	echo "starting SuperServer/SuperServer"
 	./SuperServer/SuperServer -d
@@ -55,11 +60,14 @@ stopwork()
 	
 	pkill $sig RecordServer -u "whoami" 
 	echo "stop RecordServer/RecordServer"
-	
 
 	pkill $sig SuperServer -u "whoami" 
 	echo "stop SuperServer/SuperServer"
 	
+	pkill $sig PlateServer -u "whoami" 
+	echo "stop PlateServer/PlateServer"
+	
+
 	TN=0
 	while test -f RunServer.sh
 	do
@@ -96,6 +104,10 @@ fstopwork()
 	pkill $sig SuperServer 
 	echo "stop SuperServer/SuperServer"
 	
+	pkill $sig PlateServer 
+	echo "stop PlateServer/PlateServer"
+	
+
 	TN=0
 	while test -f RunServer.sh
 	do

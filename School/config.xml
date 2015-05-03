@@ -1,4 +1,9 @@
 <Config>
+	
+	<PlateServer>
+		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/plateserver.log</logfilename>
+	</PlateServer>
+
 	<SuperServer>
 		<logfilename>/home/flyer/flyer/SchoolProgress/trunk/School/log/superserver.log</logfilename>
 	</SuperServer>

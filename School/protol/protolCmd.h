@@ -12,7 +12,7 @@ enum ServerType
 	SESSIONSERVER  = 3,       //会话服务器
 	SCENESERVER   = 4,       //场景服务器
 	GATEWAYSERVER  = 5,       //网关服务器
-	LOGINSERVER    = 6,       //登录服务器
+	PLATESERVER    = 6,       //平台服务器
 };
 
 struct ServerTypeStruct
@@ -38,6 +38,7 @@ static ServerTypeStruct ServerTypeString[] =
 	ServerTypeStruct( SESSIONSERVER,"会话服务器" ),
 	ServerTypeStruct( SCENESERVER,"场景服务器" ),
 	ServerTypeStruct( GATEWAYSERVER,"网关服务器" ),
+	ServerTypeStruct( PLATESERVER,"平台服务器" ),
 };
 
 inline const char* getServerTypeString( const ServerType type )

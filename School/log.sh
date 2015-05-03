@@ -1,6 +1,7 @@
 #!/bin/sh
 
 #日志监视脚本
+#监视plateserver   ./log.sh pl
 #监视superserver   ./log.sh su
 #监视recordserver  ./log.sh re
 #监视sessionserver ./log.sh se
@@ -15,6 +16,8 @@ CONFIG="config.xml"
 
 main()
 {
+	##平台服务器日志
+	PLATELOG=`grep plateserver.log $CONFIG | sed -e 's/<[a-zA-Z]*>//' | sed -e 's/<\/[a-zA-Z]*>//'`
 	##管理服务器日志
 	SUPERLOG=`grep superserver.log $CONFIG | sed -e 's/<[a-zA-Z]*>//' | sed -e 's/<\/[a-zA-Z]*>//'`
 	##档案服务器日志
@@ -34,9 +37,12 @@ main()
 	##异常日志
 	EXCEPTIONLOG=`grep exception.log $CONFIG | sed -e 's/<[a-zA-Z]*>//' | sed -e 's/<\/[a-zA-Z]*>//'`
 	##所有日志
-	ALL=$SUPERLOG" "$RECORDLOG" "$SESSIONLOG" "$SCENELOG" "$GATEWAYLOG" "
+	ALL=$PLATELOG" "$SUPERLOG" "$RECORDLOG" "$SESSIONLOG" "$SCENELOG" "$GATEWAYLOG" "
 	clear
 	case $PARA in
+		pl)
+		tail --follow=name --retry $PLATELOG --max-unchanged-stats=3 -n 40 -q
+		;;
 		su)
 		tail --follow=name --retry $SUPERLOG --max-unchanged-stats=3 -n 40 -q
 		;;
