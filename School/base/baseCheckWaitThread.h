@@ -18,23 +18,23 @@ class CheckWaitThread : public Thread,public TaskQueue<TcpClientTaskBase>
 		typedef TcpClientTaskBaseContainer::iterator TcpClientTaskBase_IT;
 		typedef std::queue<TcpClientTaskBase*,std::deque<TcpClientTaskBase*,__gnu_cxx::__pool_alloc<TcpClientTaskBase*> > > TcpClientTaskBaseQueue;
 		typedef std::vector<epoll_event> EpollfdContainer;
-		static const int s_maxConCnt = 4096;
+		static const DWORD s_maxConCnt = 4096;
 		TcpClientTaskPool *m_pool;
 		TcpClientTaskBaseContainer m_taskContainer;
 		TcpClientTaskBaseContainer::size_type m_taskCount;
-		int m_kdpfd;
+		SDWORD m_kdpfd;
 		EpollfdContainer m_epfds;
-		void _add( TcpClientTaskBase *task );
-		void remove( TcpClientTaskBase *task );
+		void _add(TcpClientTaskBase *task);
+		void remove(TcpClientTaskBase *task);
 		void remove( TcpClientTaskBase_IT &it );
 	public:
 		CheckWaitThread();
 		~CheckWaitThread()
 		{
-			TEMP_FAILURE_RETRY( ::close( m_kdpfd ) );
+			TEMP_FAILURE_RETRY(::close(m_kdpfd));
 		}
-		int taskSize() const;
-		int maxTaskSize() const;
+		DWORD taskSize() const;
+		DWORD maxTaskSize() const;
 		void initParam( void *param );
 		virtual void run();
 };

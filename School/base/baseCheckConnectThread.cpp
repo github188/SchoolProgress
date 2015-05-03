@@ -1,35 +1,37 @@
 #include "baseCheckConnectThread.h"
 #include "baseTcpClientTaskPool.h"
 
-void CheckConnectThread::_add( TcpClientTaskBase *task )
+void CheckConnectThread::_add(TcpClientTaskBase *task)
 {
-	m_taskContainer.push_back( task );
+	m_taskContainer.push_back(task);
 }
 
-int CheckConnectThread::taskSize() const
+DWORD CheckConnectThread::taskSize() const
 {
 	return m_taskContainer.size();
 }
-int CheckConnectThread::maxTaskSize() const
+DWORD CheckConnectThread::maxTaskSize() const
 {
 	return s_maxConCnt;
 }
-void CheckConnectThread::initParam( void *param )
+
+void CheckConnectThread::initParam(void *param)
 {
 	m_pool = (TcpClientTaskPool *)param;
 }
+
 void CheckConnectThread::run()
 {
-	while( !isFinal() )
+	while(!isFinal())
 	{
 		this->setRuning();
-		Thread::sleep( 1 );
+		Thread::sleep(1);
 		Time ct;
 		check_queue();
-		for( TcpClientTaskBase_IT it = m_taskContainer.begin();it != m_taskContainer.end(); )
+		for(TcpClientTaskBase_IT it = m_taskContainer.begin();it != m_taskContainer.end();)
 		{
 			TcpClientTaskBase *task = *it;
-			switch( task->getState() )
+			switch(task->getState())
 			{
 			#if 0
 				case TcpClientTaskBase::close:

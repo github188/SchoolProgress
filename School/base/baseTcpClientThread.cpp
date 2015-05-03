@@ -1,7 +1,7 @@
 #include "baseTcpClientThread.h"
 #include "baseTcpClientTaskPool.h"
 
-int TcpClientTaskThread::s_maxConCnt = 20;
+DWORD TcpClientTaskThread::s_maxConCnt = 20;
 TcpClientTaskThread::TcpClientTaskThread() : Thread( "工作线程" )
 {
 	m_taskCount = 0;

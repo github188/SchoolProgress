@@ -19,16 +19,16 @@ class TcpClientTaskPool : private Noncopyable
 		{
 		}
 		
-		bool init( const DWORD proThreadSize = 20 );
+		bool init(const DWORD proThreadSize = 20);
 		void final();
 		const SDWORD getTotalSize()
 		{
 			return m_clientTaskThread.taskCount();
 		}
-		bool put( TcpClientTaskBase *task );
-		void addCheckWait( TcpClientTaskBase *task );
-		bool addMain( TcpClientTaskBase *task );
-		void setUsleep( const QWORD usTime )
+		bool put(TcpClientTaskBase *task);
+		void addCheckWait(TcpClientTaskBase *task);
+		bool addMain(TcpClientTaskBase *task);
+		void setUsleep(const QWORD usTime)
 		{
 			m_usleepTime = usTime;
 		}

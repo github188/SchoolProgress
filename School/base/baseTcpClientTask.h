@@ -21,7 +21,7 @@ class TcpClientTaskBase : public Entry
 			CS_OKAY = 2,
 			CS_RECYCLE = 3,
 		};
-		TcpClientTaskBase( const std::string &ip,const DWORD port,const bool compress = false,const bool reConnect = true,const DWORD reConnTimer = 60*1000L );
+		TcpClientTaskBase(const std::string &ip,const DWORD port,const bool compress = false,const bool reConnect = true,const DWORD reConnTimer = 60*1000L);
 		virtual ~TcpClientTaskBase()
 		{
 			final();

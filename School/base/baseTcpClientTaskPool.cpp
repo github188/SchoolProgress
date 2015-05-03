@@ -26,15 +26,17 @@ void TcpClientTaskPool::final()
 	m_checkWaitThread.final();
 	m_clientTaskThread.final();
 }
+
 void TcpClientTaskPool::addCheckWait( TcpClientTaskBase *task )
 {
 	CheckWaitThread *pThread = m_checkWaitThread.getOne();
-	if( pThread )
+	if(pThread)
 	{
-		pThread->add( task );
+		pThread->add(task);
 		task->getNextState();
 	}
 }
+
 bool TcpClientTaskPool::addMain( TcpClientTaskBase *task )
 {
 	TcpClientTaskThread *pThread = m_clientTaskThread.getOne();

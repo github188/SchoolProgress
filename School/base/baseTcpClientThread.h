@@ -18,14 +18,14 @@ class TcpClientTaskThread : public Thread, public TaskQueue<TcpClientTaskBase>
 		typedef TcpClientTaskBaseContainer::iterator TcpClientTaskBase_IT;
 		typedef std::queue<TcpClientTaskBase*,std::deque<TcpClientTaskBase*,__gnu_cxx::__pool_alloc<TcpClientTaskBase*> > > TcpClientTaskBaseQueue;
 		typedef std::vector<epoll_event> EpollfdContainer;
-		static int s_maxConCnt;
+		static DWORD s_maxConCnt;
 		TcpClientTaskPool *m_pool;
 		TcpClientTaskBaseContainer m_taskContainer;
 		TcpClientTaskBaseContainer::size_type m_taskCount;
 		int m_kdpfd;
 		EpollfdContainer m_epfds;
-		void _add( TcpClientTaskBase *task );
-		void remove( TcpClientTaskBase_IT &it );
+		void _add(TcpClientTaskBase *task);
+		void remove(TcpClientTaskBase_IT &it);
 	public:
 		TcpClientTaskThread();
 		~TcpClientTaskThread()

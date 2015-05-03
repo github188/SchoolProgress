@@ -21,7 +21,7 @@ void TcpClientTaskBase::resetTickTimer(const QWORD howLong)
 bool TcpClientTaskBase::connect()
 {
 	SDWORD sock = ::socket(PF_INET,SOCK_STREAM,0);
-	LogErrorCheckConditionOnly( sock!=-1,false,"创建套接字失败%s,%d",m_ip.c_str(),m_port);
+	LogErrorCheckConditionOnly(sock != -1,false,"创建套接字失败%s,%d",m_ip.c_str(),m_port);
 	
 	socklen_t windowSize = 128*1024;
 	SDWORD retcode = ::setsockopt(sock,SOL_SOCKET,SO_RCVBUF,&windowSize,sizeof(windowSize));
@@ -58,6 +58,7 @@ bool TcpClientTaskBase::connect()
 	LogInfoCheckConditionOnly( false,"创建到服务器%s,%u的连接成功",m_ip.c_str(),m_port);
 	return true;
 }
+
 void TcpClientTaskBase::checkConnect()
 {
 	Time currentTime;
@@ -109,7 +110,7 @@ bool TcpClientTaskBase::sendLoginCmd()
 bool TcpClientTaskBase::listeningRecv(bool needRecv)
 {
 	SDWORD retcode = needRecv ? m_pSocket->recvToBufNoPoll() : 0;
-	CheckConditonReturn( retcode!=-1,false );
+	CheckConditonReturn(retcode!=-1,false);
 	do
 	{
 		BYTE cmd[Socket::s_maxDataSize];

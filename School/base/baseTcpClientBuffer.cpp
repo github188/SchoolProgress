@@ -24,7 +24,6 @@ bool TcpClientBuffer::listeningRecv()
 		{
 			if(SERVER_PARA_NULL == nullCmd->byParam)
 			{
-				Global::logger->debug("accpet the signal");
 				LogErrorCheckCondition(sendCmd(nullCmd,sizeof(*nullCmd)),true,"管理服务器客户端发送信号数据失败%s,%u",m_ip,m_port);
 			}
 			else if(CLIENT_PARA_NULL == nullCmd->byParam)

@@ -20,15 +20,15 @@ class CheckConnectThread : public Thread,public TaskQueue<TcpClientTaskBase>
 		typedef std::vector<epoll_event> EpollfdContainer;
 		TcpClientTaskBaseContainer m_taskContainer;
 		TcpClientTaskPool *m_pool;
-		static const int s_maxConCnt = 4096;
+		static const DWORD s_maxConCnt = 4096;
 	public:
-		CheckConnectThread():Thread( "连接检查线程" )
+		CheckConnectThread() : Thread("连接检查线程")
 		{
 			
 		}
-		void _add( TcpClientTaskBase *task );
-		int taskSize() const;
-		int maxTaskSize() const;
+		void _add(TcpClientTaskBase *task);
+		DWORD taskSize() const;
+		DWORD maxTaskSize() const;
 		void initParam( void *param );
 		virtual void run();
 };
