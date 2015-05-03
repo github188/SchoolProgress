@@ -5,6 +5,7 @@
 #include "base/baseSqlHandle.h"
 #include "base/baseThread.h"
 #include "superTimeTick.h"
+#include "plateClient.h"
 
 MysqlPool*  SuperServer::s_mySqlPool = NULL;
 
@@ -67,8 +68,13 @@ bool SuperServer::init()
 
 	m_clientPool = new TcpClientTaskPool(50,50000);
 	LogErrorCheckCondition( m_clientPool && m_clientPool->init(),false,"管理服务器初始化客户端连接池失败" );
-	LogErrorCheckCondition(SuperTimeTick::getInstance().start(),false,"管理服务器时间线程启动失败");
+	
+	plateClient = new PlateClient("平台服务器",(const char*)Global::config["plateip"],(WORD)Global::config["plateport"],(DWORD)Global::config["plateid"]);
+	LogErrorCheckCondition(plateClient && plateClient->connectToPlateServer() && plateClient->start(),false,"管理服务器初始化平台服务器连接初始化失败");
+	
 	LogErrorCheckCondition(NetService::init(m_port),false,"管理服务器邦定端口失败%d",m_port);
+	LogErrorCheckCondition(SuperTimeTick::getInstance().start(),false,"管理服务器时间线程启动失败");
+	
 	return true;
 }
 

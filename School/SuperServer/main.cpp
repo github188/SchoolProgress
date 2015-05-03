@@ -9,6 +9,10 @@ void initGlobalVal()
 	Global::config["threadPoolCapacity"] = 512;
 	Global::config["ifname"] = "eth0";
 	Global::config["daemon"] = "true";
+
+	Global::config["plateip"] = "127.0.0.1";
+	Global::config["plateport"] = "3000";
+	Global::config["plateid"] = "3000";
 }
 
 int main()

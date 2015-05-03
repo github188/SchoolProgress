@@ -12,7 +12,7 @@ const bool SuperTaskManager::checkDependence(const WORD serverType)
 	
 	std::ostringstream oss;
 	Record where;
-	oss << "type<" << serverType << " and type != " << SUPERSERVER << " and type != " << LOGINSERVER;
+	oss << "type<" << serverType << " and type != " << SUPERSERVER << " and type != " << PLATESERVER;
 	where.put("type",oss.str());
 
 	RecordSet *recordSet = handle->exeSelect("SERVERLIST",NULL,&where);

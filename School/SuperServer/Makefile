@@ -15,7 +15,8 @@ src = main.cpp\
 	  SuperServer.cpp\
 	  superTimeTick.cpp\
 	  superTask.cpp\
-	  superTaskManager.cpp
+	  superTaskManager.cpp\
+	  plateClient.cpp
 
 object = $(patsubst %.cpp,%.o,$(src))
 depend = $(patsubst %.cpp,%.d,$(src))
